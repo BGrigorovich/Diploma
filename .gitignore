@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Log files
+*.log
+
+# Intellij products workspace specific files
+.idea/*
+
+# Local database
+# *.sqlite
+# *.sqlite3
+
+# Images
+*.jpg
+*.png
+
+# wsgi file
+CourierApp/wsgi.py
+
+# Libs
+files/

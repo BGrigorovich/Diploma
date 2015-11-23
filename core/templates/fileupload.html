@@ -1,0 +1,24 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+{% if file_uploaded %}
+<h5>Top 50 words by probability:</h5>
+<table>
+    <tr>
+        <td>Word</td>
+        <td>Probability</td>
+    </tr>
+    {% for token in tokens %}
+    <tr>
+        <td>{{ token.0 }}</td>
+        <td>{{ token.1 }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+<form enctype="multipart/form-data" method="post" action="">{% csrf_token %}
+    {{ form.as_p }}
+    <p><input type="submit"></p>
+</form>
+{% endblock %}
