@@ -35,8 +35,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'kenlm',
-    'core'
+    'core',
 )
 
 FILE_UPLOAD_HANDLERS = (
@@ -106,3 +105,5 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = BASE_DIR + '/files/'
 
 GOLD_CORPUS_DIR = BASE_DIR + '/gold_corpus/'
+
+KENLM_DIR = BASE_DIR + '/kenlm/'

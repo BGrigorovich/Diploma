@@ -7,7 +7,8 @@ __pycache__/
 *.log
 
 # Intellij products workspace specific files
-.idea/*
+/db.sqlite3
+.idea/
 
 # Local database
 # *.sqlite
@@ -18,7 +19,14 @@ __pycache__/
 *.png
 
 # wsgi file
+/kenlm
 CourierApp/wsgi.py
+
+/test.py
+/test_input
+/ukr_only_words_lower.txt
+/core/test1.py
+/calc_prob.py
 
 # Libs
 files/
