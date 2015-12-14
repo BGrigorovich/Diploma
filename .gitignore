@@ -7,12 +7,11 @@ __pycache__/
 *.log
 
 # Intellij products workspace specific files
-/db.sqlite3
 .idea/
 
 # Local database
-# *.sqlite
-# *.sqlite3
+*.sqlite
+*.sqlite3
 
 # Images
 *.jpg
@@ -28,5 +27,5 @@ CourierApp/wsgi.py
 /core/test1.py
 /calc_prob.py
 
-# Libs
+# Corpus files
 files/

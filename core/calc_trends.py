@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import json
 import os
-import nltk
 import operator
 import re
+import string
 from collections import Counter
 from Diploma.settings import GOLD_CORPUS_DIR
 
@@ -16,11 +16,9 @@ def rename_input_file(file_name):
 
 def tokenize_text(file_name):
     with open(file_name) as input_file:
-        # delete non ukrainian words and symbols
         text = input_file.read()
-        only_words = re.sub('\W|\d+', ' ', text)
-
-        tokens = nltk.word_tokenize(only_words)
+        text = re.sub('–|«|»|\d+', ' ', text)
+        tokens = [word.strip(string.punctuation) for word in text.split()]
         tokens_lower = [token.lower() for token in tokens]
         return tokens_lower
 
@@ -48,27 +46,25 @@ def get_gold_corpus_prob(file_path=GOLD_CORPUS_DIR + 'ukr_prob.json'):
 
 def calc_prob_diff(tokens):
     our_corpus_prob = calc_tokens_prob(tokens)
-    stopwords = [word for word in open(GOLD_CORPUS_DIR + 'stopwords')]
-    print(stopwords)
+    # leave two blank lines at the end of the file
+    stopwords = set([word[:-1] for word in open(GOLD_CORPUS_DIR + 'stopwords')])
     gold_corpus_prob = get_gold_corpus_prob()
 
     probability_difference = {}
     for word in our_corpus_prob:
-        if word + '\n' not in stopwords:
-            # todo: replace + '\n' in comparison on something more elegant (each word in stopwords end with \n)
+        if word not in stopwords:
             probability_difference[word] = our_corpus_prob[word] - gold_corpus_prob.get(word, 0)
     return probability_difference
 
 
 def write_trends(file_name, diff):
     files_path = '/'.join(file_name.split('/')[:-1]) + '/'
-    # if not os.path.exists(files_path + 'trends/'):
-    #     os.makedirs(files_path + 'trends/')
+    if not os.path.exists(files_path + 'trends/'):
+        os.makedirs(files_path + 'trends/')
     with open(files_path + 'trends/' + file_name.split('/')[-1] + '_trends.json', 'w+') as trends_file:
         trends_file.write(json.dumps(diff, ensure_ascii=False))
 
 
-# todo: don`t delete apostrophe
 def calc_trends(file_name):
     file_name = rename_input_file(file_name)
     tokens = tokenize_text(file_name)
