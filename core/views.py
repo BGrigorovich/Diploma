@@ -1,9 +1,10 @@
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render_to_response
 from django.template.context_processors import csrf
+
+from Diploma.settings import MEDIA_ROOT
+from utils.calc_trends import calc_trends
 from .forms import UploadFileForm
 from .models import CorpusFile
-from .calc_trends import calc_trends
-from Diploma.settings import MEDIA_ROOT
 
 
 def upload_file(request):
@@ -15,7 +16,13 @@ def upload_file(request):
             args['form'] = UploadFileForm()
             corpus_file = CorpusFile(corpus_file=request.FILES['corpus_file'])
             corpus_file.save()
-            trends = calc_trends(MEDIA_ROOT + str(corpus_file.corpus_file)[2:])[:50]
+
+            # trends_task = calc_trends.delay(MEDIA_ROOT + str(corpus_file.corpus_file)[2:])
+            # trends = trends_task.get()[:50]
+
+            # todo: wtf? refactor this
+            trends = calc_trends(MEDIA_ROOT + 'corpus/' + str(corpus_file.corpus_file))[:50]
+
             args['tokens'] = trends
             args['file_uploaded'] = True
         return render_to_response('fileupload.html', args)

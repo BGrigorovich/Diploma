@@ -18,13 +18,13 @@ __pycache__/
 *.png
 
 # wsgi file
-/kenlm
-CourierApp/wsgi.py
+/utils/regression.py
+/out.txt
 
 /test.py
 /test_input
 /ukr_only_words_lower.txt
-/core/test1.py
+
 /calc_prob.py
 
 # Corpus files

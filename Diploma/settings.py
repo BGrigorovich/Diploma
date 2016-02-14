@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import djcelery
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -35,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'djcelery',
     'core',
 )
 
@@ -107,3 +109,13 @@ MEDIA_ROOT = BASE_DIR + '/files/'
 GOLD_CORPUS_DIR = BASE_DIR + '/gold_corpus/'
 
 KENLM_DIR = BASE_DIR + '/kenlm/'
+
+# Celery
+
+djcelery.setup_loader()
+
+BROKER_HOST = "localhost"
+BROKER_PORT = 5672
+BROKER_USER = "guest"
+BROKER_PASSWORD = "guest"
+BROKER_VHOST = "/"
