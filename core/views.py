@@ -16,7 +16,6 @@ def upload_file(request):
             args['form'] = UploadFileForm()
             corpus_file = CorpusFile(corpus_file=request.FILES['corpus_file'])
             corpus_file.save()
-
             # trends_task = calc_trends.delay(MEDIA_ROOT + str(corpus_file.corpus_file)[2:])
             # trends = trends_task.get()[:50]
 

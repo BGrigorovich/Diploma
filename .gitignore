@@ -20,14 +20,11 @@ __pycache__/
 
 /Diploma/wsgi.py
 
-/utils/regression.py
 
 /test.py
 /test_input
 /gold_corpus/ukr_only_words_lower.txt
-/gold_corpus/out.txt
-/smooth_test.py
+/out.json
 
 # Corpus files
-/smooth_test1.txt
 files/

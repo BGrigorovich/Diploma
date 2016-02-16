@@ -2,8 +2,8 @@
 import operator
 import os
 import json
-# from celery.decorators import task
 from utils.corpus import OurCorpus
+# from celery.decorators import task
 
 
 # todo: move to storage
@@ -19,7 +19,7 @@ def write_trends(file_name, diff):
 def calc_trends(file_name):
     corpus = OurCorpus(file_name)
     diff = corpus.calc_prob_difference()
-    # diff = calc_prob_diff(tokens)
+
     write_trends(file_name, diff)
     sorted_diff = sorted(diff.items(), key=operator.itemgetter(1), reverse=True)
 
