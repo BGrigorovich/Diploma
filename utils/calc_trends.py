@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-import os
 import operator
+import os
+import json
 # from celery.decorators import task
-from core.corpus import *
+from utils.corpus import OurCorpus
 
 
 # todo: move to storage
