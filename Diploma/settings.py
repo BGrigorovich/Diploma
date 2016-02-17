@@ -104,11 +104,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = BASE_DIR + '/files/'
-
 GOLD_CORPUS_DIR = BASE_DIR + '/gold_corpus/'
 
-KENLM_DIR = BASE_DIR + '/kenlm/'
+MEDIA_ROOT = BASE_DIR + '/files/'
+
+CORPUS_DIR = MEDIA_ROOT + 'corpus/'
+TRENDS_DIR = MEDIA_ROOT + 'trends/'
+
 
 # Celery
 

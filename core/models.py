@@ -10,7 +10,7 @@ class CorpusFile(models.Model):
 
     # def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
     #     super(CorpusFile, self).save()
-    #     trends = calc_trends(MEDIA_ROOT + 'corpus/' + str(self.corpus_file))[:50]
+    #     trends = calc_trends(CORPUS_DIR + str(self.corpus_file))[:50]
     #     print(self.corpus_file.name)
     #     print(trends_storage.get_available_name(self.corpus_file.name))
     #     self.trends_file = trends_storage.get_available_name(self.corpus_file.name)

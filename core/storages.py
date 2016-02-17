@@ -1,5 +1,5 @@
 from django.core.files.storage import FileSystemStorage
-from Diploma.settings import MEDIA_ROOT
+from Diploma.settings import MEDIA_ROOT, CORPUS_DIR, TRENDS_DIR
 
 
 # # todo: file permissions
@@ -15,5 +15,5 @@ class TrendsFileSystemStorage(FileSystemStorage):
         return name + '_trends.json'
 
 
-corpus_storage = FileSystemStorage(MEDIA_ROOT + 'corpus/')
-trends_storage = TrendsFileSystemStorage(MEDIA_ROOT + 'trends/')
+corpus_storage = FileSystemStorage(CORPUS_DIR)
+trends_storage = TrendsFileSystemStorage(TRENDS_DIR)

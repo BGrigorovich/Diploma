@@ -19,6 +19,7 @@ __pycache__/
 *.png
 
 /Diploma/wsgi.py
+/gold_corpus/word_forms
 
 
 /test.py

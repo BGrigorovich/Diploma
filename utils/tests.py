@@ -1,11 +1,10 @@
 from django.test import TestCase
 from .corpus import smooth_corpus
-from Diploma.settings import GOLD_CORPUS_DIR
 
 
 class SmoothingTestCase(TestCase):
     def setUp(self):
-        self.corpus_probabilities = smooth_corpus(GOLD_CORPUS_DIR + 'smoothing_test.txt')
+        self.corpus_probabilities = smooth_corpus('a a a a a a a a a a b b b c c d e f')
 
     def test_zero_prob(self):
         self.assertAlmostEqual(self.corpus_probabilities['zero_count_prob'], -0.11111111111111)

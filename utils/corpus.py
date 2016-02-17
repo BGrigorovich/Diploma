@@ -8,21 +8,19 @@ from .interpolation import interpolate, interpolate_token_count_of_count
 
 
 class BaseCorpus(object):
-    def __init__(self, filename):
-        self.filename = filename
+    def __init__(self, text):
+        self.text = text
         self.tokens = list()
         self.tokens_count = Counter()
         self.tokens_prob = dict()
 
     def tokenize_text(self):
-        with open(self.filename, errors='ignore') as input_file:
-            text = input_file.read()
-            text = re.sub('–|«|»|\d+', ' ', text)
-            tokens = [word.strip(string.punctuation) for word in text.split()]
-            # todo: figure out why I have the '' token
-            tokens = list(filter(''.__ne__, tokens))
-            tokens_lower = [token.lower() for token in tokens]
-            self.tokens = tokens_lower
+        corpus_text = re.sub('–|«|»|\d+', ' ', self.text)
+        tokens = [word.strip(string.punctuation) for word in corpus_text.split()]
+        # todo: figure out why I have the '' token
+        tokens = list(filter(''.__ne__, tokens))
+        tokens_lower = [token.lower() for token in tokens]
+        self.tokens = tokens_lower
 
     def calc_tokens_count(self):
         self.tokens_count = Counter(self.tokens)
@@ -39,6 +37,11 @@ class BaseCorpus(object):
     def calc_tokens_prob(self):
         for token, token_count in self.tokens_count.items():
             self.tokens_prob[token] = token_count / len(self.tokens)
+
+    @classmethod
+    def from_file(cls, filename):
+        with open(filename) as corpus_file:
+            return cls(corpus_file.read())
 
 
 class GoldCorpusFileHandler(object):
@@ -73,8 +76,8 @@ class OurCorpus(BaseCorpus):
         return probability_difference
 
 
-def smooth_corpus(filename):
-    gold_corpus = BaseCorpus(filename)
+def smooth_corpus(corpus_text):
+    gold_corpus = BaseCorpus(corpus_text)
 
     gold_corpus.tokenize_text()
     gold_corpus.calc_tokens_count()
