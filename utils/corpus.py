@@ -3,11 +3,12 @@ import re
 import string
 import json
 from collections import Counter
+import redis
 from Diploma.settings import GOLD_CORPUS_DIR
-from .interpolation import interpolate, interpolate_token_count_of_count
+from utils.interpolation import interpolate, interpolate_token_count_of_count
 
 
-class BaseCorpus(object):
+class BaseCorpus:
     def __init__(self, text):
         self.text = text
         self.tokens = list()
@@ -21,6 +22,16 @@ class BaseCorpus(object):
         tokens = list(filter(''.__ne__, tokens))
         tokens_lower = [token.lower() for token in tokens]
         self.tokens = tokens_lower
+
+    def lemmatize_tokens(self):
+        if self.tokens:
+            r = redis.StrictRedis('localhost', port=6379, db=10)
+            for i in range(len(self.tokens)):
+                word_lemma = r.get(self.tokens[i])
+                if word_lemma:
+                    self.tokens[i] = word_lemma.decode()
+        else:
+            raise ValueError('BaseCorpus attribute self.tokens is empty')
 
     def calc_tokens_count(self):
         self.tokens_count = Counter(self.tokens)
@@ -44,7 +55,7 @@ class BaseCorpus(object):
             return cls(corpus_file.read())
 
 
-class GoldCorpusFileHandler(object):
+class GoldCorpusFileHandler:
     def __init__(self, prob_filename, stopwords_filename):
         self.prob_filename = prob_filename
         self.stopwords_filename = stopwords_filename
@@ -63,10 +74,11 @@ class GoldCorpusFileHandler(object):
 class OurCorpus(BaseCorpus):
     def calc_prob_difference(self):
         self.tokenize_text()
+        self.lemmatize_tokens()
         self.calc_tokens_count()
         self.calc_tokens_prob()
 
-        gold_corpus = GoldCorpusFileHandler(GOLD_CORPUS_DIR + 'ukr_prob_smoothed.json', GOLD_CORPUS_DIR + 'stopwords')
+        gold_corpus = GoldCorpusFileHandler(GOLD_CORPUS_DIR + 'ukr_prob_smoothed_lemmatized.json', GOLD_CORPUS_DIR + 'stopwords')
         zero_prob = gold_corpus.calc_zero_count_tokens_prob(set(self.tokens))
 
         probability_difference = dict()
@@ -80,6 +92,7 @@ def smooth_corpus(corpus_text):
     gold_corpus = BaseCorpus(corpus_text)
 
     gold_corpus.tokenize_text()
+    gold_corpus.lemmatize_tokens()
     gold_corpus.calc_tokens_count()
     gold_corpus.smooth()
     gold_corpus.calc_tokens_prob()

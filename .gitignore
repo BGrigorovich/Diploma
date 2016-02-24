@@ -28,4 +28,7 @@ __pycache__/
 /out.json
 
 # Corpus files
+/gold_corpus/word_forms_redis.py
+/gold_corpus/word_forms_preparation.py
+/utils/azaza.py
 files/
