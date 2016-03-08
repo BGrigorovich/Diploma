@@ -16,9 +16,14 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from core import urls as core_urls
-
+from corpus_parser.views import test_view
 urlpatterns = [
-    url(r'^admin', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
+]
+
+urlpatterns += [
+    url(r'^test-parse$', test_view)
 ]
 
 urlpatterns += core_urls.urlpatterns
+

@@ -1,3 +1,6 @@
+feedparser
+requests
+lxml
 redis
 scipy
 amqp==1.4.9

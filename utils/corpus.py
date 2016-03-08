@@ -20,12 +20,17 @@ class BaseCorpus:
         tokens = [word.strip(string.punctuation) for word in corpus_text.split()]
         # todo: figure out why I have the '' token
         tokens = list(filter(''.__ne__, tokens))
-        tokens_lower = [token.lower() for token in tokens]
-        self.tokens = tokens_lower
+        self.tokens = [token.lower() for token in tokens]
+
+    def tokens_without_stopwords(self):
+        with open(GOLD_CORPUS_DIR + 'stopwords') as stopwords_file:
+            stopwords = set([word[:-1] for word in stopwords_file])
+            return [token for token in self.tokens if token not in stopwords]
 
     def lemmatize_tokens(self):
         if self.tokens:
             r = redis.StrictRedis('localhost', port=6379, db=10)
+            # self.tokens = [r.get(token).decode() if r.get(token) else token for token in self.tokens]
             for i in range(len(self.tokens)):
                 word_lemma = r.get(self.tokens[i])
                 if word_lemma:
@@ -39,11 +44,10 @@ class BaseCorpus:
     def smooth(self):
         counts_of_counts = Counter(self.tokens_count.values())
         interpolation_function = interpolate(counts_of_counts)
-        smoothed_count = dict()
+
         for token, token_count in self.tokens_count.items():
             interp = interpolate_token_count_of_count(interpolation_function, token_count)
-            smoothed_count[token] = (token_count + 1) * interp / counts_of_counts[token_count]
-        self.tokens_count = smoothed_count
+            self.tokens_count[token] = (token_count + 1) * interp / counts_of_counts[token_count]
 
     def calc_tokens_prob(self):
         for token, token_count in self.tokens_count.items():
@@ -90,7 +94,6 @@ class OurCorpus(BaseCorpus):
 
 def smooth_corpus(corpus_text):
     gold_corpus = BaseCorpus(corpus_text)
-
     gold_corpus.tokenize_text()
     gold_corpus.lemmatize_tokens()
     gold_corpus.calc_tokens_count()

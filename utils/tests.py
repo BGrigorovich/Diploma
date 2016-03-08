@@ -21,7 +21,6 @@ class ProbDifferenceTestCase(TestCase):
         self.prob_difference = self.corpus.calc_prob_difference()
 
     def test_prob_difference(self):
-        print(self.prob_difference)
         self.assertAlmostEqual(self.prob_difference['порошенко'], 0.4706416347603717)
         self.assertAlmostEqual(self.prob_difference['бігти'], 0.49989304812834223)
 

@@ -37,7 +37,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'djcelery',
+    'annoying',
     'core',
+    'corpus_parser',
 )
 
 FILE_UPLOAD_HANDLERS = (
@@ -110,7 +112,6 @@ MEDIA_ROOT = BASE_DIR + '/files/'
 
 CORPUS_DIR = MEDIA_ROOT + 'corpus/'
 TRENDS_DIR = MEDIA_ROOT + 'trends/'
-
 
 # Celery
 

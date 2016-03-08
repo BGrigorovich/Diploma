@@ -31,4 +31,6 @@ __pycache__/
 /gold_corpus/word_forms_redis.py
 /gold_corpus/word_forms_preparation.py
 /utils/azaza.py
+/utils/topic_modeling.py
+/utils/last_check_time.txt
 files/
