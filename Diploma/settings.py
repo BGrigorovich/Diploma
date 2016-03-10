@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from datetime import timedelta
 import djcelery
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,7 +37,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'djcelery',
+    'kombu.transport.django',
+    'djcelery',
     'annoying',
     'core',
     'corpus_parser',
@@ -117,8 +119,20 @@ TRENDS_DIR = MEDIA_ROOT + 'trends/'
 
 djcelery.setup_loader()
 
+# todo: refactor due to broker settings deprecation
 BROKER_HOST = "localhost"
 BROKER_PORT = 5672
 BROKER_USER = "guest"
 BROKER_PASSWORD = "guest"
 BROKER_VHOST = "/"
+
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+
+# todo: change on every hour
+CELERYBEAT_SCHEDULE = {
+    'parse-every-30-seconds': {
+        'task': 'corpus_parser.parser.parse_all',
+        'schedule': timedelta(seconds=30),
+        'args': ()
+    },
+}

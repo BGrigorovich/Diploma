@@ -1,34 +1,14 @@
-import time
 from collections import namedtuple
 from contextlib import suppress
+
 import feedparser
 import requests
-from dateutil.parser import parse as parse_time
 from annoying.functions import get_object_or_None
 from bs4 import BeautifulSoup
-from corpus_parser.models import Site, Article
+from celery import shared_task
+from dateutil.parser import parse as parse_time
 
-
-# todo: delete
-class LastCheckTime:
-    __format = '%a, %d %b %Y %H:%M:%S'
-
-    def __init__(self, filename):
-        self.file = filename
-
-    def get(self):
-        try:
-            with open(self.file) as f:
-                return time.strptime(f.read(), self.__format)
-        except (EnvironmentError, ValueError):
-            # this day noon
-            noon_format = self.__format[:12]
-            return time.strptime(time.strftime(noon_format), noon_format)
-
-    def set(self):
-        with open(self.file, 'w+') as f:
-            f.write(time.strftime(self.__format, time.gmtime()))
-
+from .models import Article, Site
 
 Item = namedtuple('Item', ['title', 'link', 'published'])
 
@@ -54,7 +34,8 @@ def parse_rss(site):
             break
 
 
+@shared_task
 def parse_all():
-    sites = Site.objects.all()
-    for site in sites:
+    sites_to_parse = Site.objects.filter(parse=True)
+    for site in sites_to_parse:
         parse_rss(site)

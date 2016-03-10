@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+import json
 import re
 import string
-import json
 from collections import Counter
+
 import redis
+
 from Diploma.settings import GOLD_CORPUS_DIR
 from utils.interpolation import interpolate, interpolate_token_count_of_count
 
@@ -59,6 +61,7 @@ class BaseCorpus:
             return cls(corpus_file.read())
 
 
+# todo: create common stopwords and language-specific stopwords files, refactor accordingly
 class GoldCorpusFileHandler:
     def __init__(self, prob_filename, stopwords_filename):
         self.prob_filename = prob_filename

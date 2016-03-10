@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
+import json
 import operator
 import os
-import json
-from utils.corpus import OurCorpus
+
 from Diploma.settings import TRENDS_DIR
-# from celery.decorators import task
+from utils.corpus import OurCorpus
 
 
 def write_trends(file_name, diff):
@@ -14,7 +14,6 @@ def write_trends(file_name, diff):
         trends_file.write(json.dumps(diff, ensure_ascii=False))
 
 
-# @task
 def calc_trends(file_name):
     corpus = OurCorpus.from_file(file_name)
     diff = corpus.calc_prob_difference()

@@ -33,4 +33,6 @@ __pycache__/
 /utils/azaza.py
 /utils/topic_modeling.py
 /utils/last_check_time.txt
+/celerybeat-schedule
+/sites.json
 files/
