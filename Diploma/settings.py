@@ -18,7 +18,6 @@ import djcelery
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '@5q1qnjp80r^7jx$61z=i8p58lv^k&u%kn_$rw_a8ped5*w80w'
@@ -81,7 +80,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Diploma.wsgi.application'
 
 # Database
-# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -91,7 +89,6 @@ DATABASES = {
 }
 
 # Internationalization
-# https://docs.djangoproject.com/en/1.8/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -104,27 +101,20 @@ USE_L10N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
 
-GOLD_CORPUS_DIR = BASE_DIR + '/gold_corpus/'
-
 MEDIA_ROOT = BASE_DIR + '/files/'
 
+# Corpus files directories
+
+GOLD_CORPUS_DIR = BASE_DIR + '/gold_corpus/'
 CORPUS_DIR = MEDIA_ROOT + 'corpus/'
 TRENDS_DIR = MEDIA_ROOT + 'trends/'
 
 # Celery
 
 djcelery.setup_loader()
-
-# todo: refactor due to broker settings deprecation
-BROKER_HOST = "localhost"
-BROKER_PORT = 5672
-BROKER_USER = "guest"
-BROKER_PASSWORD = "guest"
-BROKER_VHOST = "/"
 
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 

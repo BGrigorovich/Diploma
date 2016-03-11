@@ -5,7 +5,7 @@ import os
 from celery import Celery
 from django.conf import settings
 
-app = Celery('Diploma')
+app = Celery('Diploma', broker='redis://localhost:5673/0')
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Diploma.settings')
 
