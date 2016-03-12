@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 import os
 from datetime import timedelta
 import djcelery
+from celery.schedules import crontab
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -118,11 +119,17 @@ djcelery.setup_loader()
 
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 
-# todo: change on every hour
+CELERY_TIMEZONE = 'Europe/Kiev'
+
 CELERYBEAT_SCHEDULE = {
-    'parse-every-30-seconds': {
-        'task': 'corpus_parser.parser.parse_all',
-        'schedule': timedelta(seconds=30),
+    'parse-sites-every-hour': {
+        'task': 'corpus_parser.tasks.parse_all',
+        'schedule': crontab(minute=0, hour='*/1'),
         'args': ()
     },
+    'calc-trends-every-day': {
+        'task': 'corpus_parser.tasks.calculate_daily_trends',
+        'schedule': crontab(minute=1, hour=0),
+        'args': (50,)
+    }
 }

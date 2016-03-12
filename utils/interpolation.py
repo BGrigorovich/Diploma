@@ -13,5 +13,3 @@ def interpolate(sorted_counts_of_counts):
     sorted_counts_of_counts = sorted(sorted_counts_of_counts.items(), key=operator.itemgetter(0))
     x, y = zip(*sorted_counts_of_counts)
     return interp1d(x, y)
-
-

@@ -1,3 +1,4 @@
+import datetime
 from django.contrib import admin
 from django.db import models
 
@@ -29,3 +30,11 @@ class Article(models.Model):
 
 class ArticleAdmin(admin.ModelAdmin):
     list_display = ('site', 'published', 'title')
+
+
+class DailyTrend(models.Model):
+    date = models.DateField(default=datetime.date.today() - datetime.timedelta(1))
+    trends = models.TextField()
+
+    def __str__(self):
+        return self.date.strftime('%a, %d %b %Y')
