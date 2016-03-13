@@ -1,6 +1,6 @@
 from django.test import TestCase
 from redis import StrictRedis
-from .corpus import smooth_corpus, OurCorpus
+from .corpus import smooth_corpus, ProbabilityCorpus
 
 
 class SmoothingTestCase(TestCase):
@@ -17,12 +17,12 @@ class SmoothingTestCase(TestCase):
 
 class ProbDifferenceTestCase(TestCase):
     def setUp(self):
-        self.corpus = OurCorpus('Порошенко, Порошенко, бігти, біжить')
+        self.corpus = ProbabilityCorpus('Порошенко, Порошенко, бігти, біжить')
         self.prob_difference = self.corpus.calc_prob_difference()
 
     def test_prob_difference(self):
-        self.assertAlmostEqual(self.prob_difference['порошенко'], 0.4706416347603717)
-        self.assertAlmostEqual(self.prob_difference['бігти'], 0.49989304812834223)
+        self.assertAlmostEqual(self.prob_difference['порошенко'], 0.45781046262238456)
+        self.assertAlmostEqual(self.prob_difference['бігти'], 0.4998421953328491)
 
 
 class LemmatizationTestCase(TestCase):

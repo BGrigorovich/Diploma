@@ -25,11 +25,11 @@ def get_article_from_html(link, article_class_name):
 def write_article(article, site):
         published = parse_time(article.published).date()
         article_text = get_article_from_html(article.link, site.article_class_name)
+
         article_corpus = BaseCorpus(article_text)
-        article_corpus.tokenize_text()
-        article_corpus.lemmatize_tokens()
-        article_corpus.clean_from_stopwords()
+        article_corpus.tokenize().lemmatize_tokens().remove_stopwords()
         article_text = ' '.join(article_corpus.tokens)
+
         Article(title=article.title, published=published, link=article.link,
                 text=article_text, site=site).save()
 

@@ -4,7 +4,7 @@ import operator
 import os
 
 from Diploma.settings import TRENDS_DIR
-from utils.corpus import OurCorpus
+from utils.corpus import ProbabilityCorpus
 
 
 def write_trends(file_name, diff):
@@ -15,7 +15,7 @@ def write_trends(file_name, diff):
 
 
 def calc_trends(file_name):
-    corpus = OurCorpus.from_file(file_name)
+    corpus = ProbabilityCorpus.from_file(file_name)
     diff = corpus.calc_prob_difference()
 
     write_trends(file_name, diff)
