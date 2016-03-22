@@ -5,7 +5,6 @@ import feedparser
 import requests
 from annoying.functions import get_object_or_None
 from bs4 import BeautifulSoup
-
 from dateutil.parser import parse as parse_time
 
 from utils.corpus import BaseCorpus
@@ -27,7 +26,7 @@ def write_article(article, site):
         article_text = get_article_from_html(article.link, site.article_class_name)
 
         article_corpus = BaseCorpus(article_text)
-        article_corpus.tokenize().lemmatize_tokens().remove_stopwords()
+        article_corpus.tokenize().lemmatize().remove_stopwords()
         article_text = ' '.join(article_corpus.tokens)
 
         Article(title=article.title, published=published, link=article.link,

@@ -15,6 +15,7 @@ class Site(models.Model):
 
 class SiteAdmin(admin.ModelAdmin):
     list_display = ('name', 'parse')
+    list_filter = ('parse',)
 
 
 class Article(models.Model):
@@ -30,10 +31,12 @@ class Article(models.Model):
 
 class ArticleAdmin(admin.ModelAdmin):
     list_display = ('site', 'published', 'title')
+    list_filter = ('site', 'published')
 
 
+# todo: make trends for sites
 class DailyTrend(models.Model):
-    date = models.DateField(default=datetime.date.today() - datetime.timedelta(1))
+    date = models.DateField(default=datetime.date.today() - datetime.timedelta(1), unique=True)
     trends = models.TextField()
 
     def __str__(self):

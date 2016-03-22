@@ -31,7 +31,7 @@ class BaseCorpus:
         else:
             raise ValueError('Object attribute self.tokens is empty')
 
-    def lemmatize_tokens(self):
+    def lemmatize(self):
         if self.tokens:
             r = redis.StrictRedis('localhost', port=6379, db=10)
             for i in range(len(self.tokens)):
@@ -82,7 +82,7 @@ class ProbabilityCorpus(BaseCorpus):
             raise ValueError('Object attribute self.tokens_count is empty')
 
     def calc_prob_difference(self):
-        self.tokenize().lemmatize_tokens().remove_stopwords().calc_tokens_count().calc_tokens_prob()
+        self.tokenize().lemmatize().remove_stopwords().calc_tokens_count().calc_tokens_prob()
 
         gold_corpus = GoldCorpusFileHandler(GOLD_CORPUS_DIR + 'ukr_prob.json')
         zero_prob = gold_corpus.calc_zero_count_tokens_prob(set(self.tokens))
@@ -102,14 +102,14 @@ class GoldCorpusFileHandler:
         with open(self.prob_filename, errors='ignore') as gold_corpus_file:
             data = json.loads(gold_corpus_file.read())
             self.tokens_prob = data['tokens_prob']
-            self.zero_count_total_prob = data['zero_count_prob']
+            self.zero_count_prob = data['zero_count_prob']
 
     def calc_zero_count_tokens_prob(self, tokens_to_compare):
-        return self.zero_count_total_prob / len(tokens_to_compare - set(self.tokens_prob.values()))
+        return self.zero_count_prob / len(tokens_to_compare - set(self.tokens_prob.values()))
 
 
 def smooth_corpus(corpus_text):
     gold_corpus = ProbabilityCorpus(corpus_text)
-    gold_corpus.tokenize().lemmatize_tokens().remove_stopwords().calc_tokens_count().smooth().calc_tokens_prob()
+    gold_corpus.tokenize().lemmatize().remove_stopwords().calc_tokens_count().smooth().calc_tokens_prob()
     zero_prob = 1 - sum(gold_corpus.tokens_prob.values())
     return {'zero_count_prob': zero_prob, 'tokens_prob': gold_corpus.tokens_prob}
