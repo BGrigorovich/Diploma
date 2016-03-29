@@ -16,15 +16,11 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from core import urls as core_urls
-from corpus_parser.views import test_parse, test_trends
+from corpus_parser import urls as corpus_parser_urls
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 ]
 
-urlpatterns += [
-    url(r'^test-parse$', test_parse),
-    url(r'^test-trends$', test_trends),
-]
-
 urlpatterns += core_urls.urlpatterns
+urlpatterns += corpus_parser_urls.urlpatterns

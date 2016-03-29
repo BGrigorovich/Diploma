@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Site, SiteAdmin, Article, ArticleAdmin, DailyTrend
+from .models import Site, SiteAdmin, Article, ArticleAdmin, DailyTrend, DailyTrendAdmin
 
 admin.site.register(Site, SiteAdmin)
 admin.site.register(Article, ArticleAdmin)
-admin.site.register(DailyTrend)
+admin.site.register(DailyTrend, DailyTrendAdmin)

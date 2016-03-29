@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'kombu.transport.django',
     'djcelery',
     'annoying',
@@ -132,4 +133,10 @@ CELERYBEAT_SCHEDULE = {
         'schedule': crontab(minute=1, hour=0),
         'args': (50,)
     }
+}
+
+# Django REST Framework
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',)
 }

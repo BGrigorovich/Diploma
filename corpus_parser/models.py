@@ -6,7 +6,7 @@ from django.db import models
 class Site(models.Model):
     name = models.CharField(max_length=50)
     rss_link = models.CharField(max_length=100)
-    article_class_name = models.CharField(max_length=25)
+    article_class_name_or_id = models.CharField(max_length=25, null=True, blank=True)
     parse = models.BooleanField(default=True)
 
     def __str__(self):
@@ -34,10 +34,14 @@ class ArticleAdmin(admin.ModelAdmin):
     list_filter = ('site', 'published')
 
 
-# todo: make trends for sites
 class DailyTrend(models.Model):
-    date = models.DateField(default=datetime.date.today() - datetime.timedelta(1), unique=True)
+    date = models.DateField(default=datetime.date.today() - datetime.timedelta(1))
+    site = models.ForeignKey(Site, null=True, blank=True)
     trends = models.TextField()
 
     def __str__(self):
         return self.date.strftime('%a, %d %b %Y')
+
+
+class DailyTrendAdmin(admin.ModelAdmin):
+    list_display = ('date', 'site')

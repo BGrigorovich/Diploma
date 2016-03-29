@@ -1,36 +1,40 @@
 from collections import namedtuple
 from contextlib import suppress
-
 import feedparser
 import requests
 from annoying.functions import get_object_or_None
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_time
-
 from utils.corpus import BaseCorpus
 from .models import Article
-
 
 Item = namedtuple('Item', ['title', 'link', 'published'])
 
 
-def get_article_from_html(link, article_class_name):
+def get_article_from_html(link, article_class_name_or_id):
     response = requests.get(link)
     if response.status_code == requests.codes.ok:
         soup = BeautifulSoup(response.content, 'lxml')
-        return soup.find('div', class_=article_class_name).get_text()
+        try:
+            return soup.find('div', {'class': article_class_name_or_id}).get_text()
+        except AttributeError:
+            return soup.find('div', {'id': article_class_name_or_id}).get_text()
 
 
 def write_article(article, site):
-        published = parse_time(article.published).date()
-        article_text = get_article_from_html(article.link, site.article_class_name)
+    published = parse_time(article.published).date()
+    article_text = get_article_from_html(article.link, site.article_class_name_or_id)
 
-        article_corpus = BaseCorpus(article_text)
-        article_corpus.tokenize().lemmatize().remove_stopwords()
-        article_text = ' '.join(article_corpus.tokens)
+    # fuck it
+    if 'function' in article_text:
+        return
 
-        Article(title=article.title, published=published, link=article.link,
-                text=article_text, site=site).save()
+    article_corpus = BaseCorpus(article_text)
+    article_corpus.tokenize().lemmatize().remove_stopwords()
+    article_text = ' '.join(article_corpus.tokens)
+
+    Article(title=article.title, published=published, link=article.link,
+            text=article_text, site=site).save()
 
 
 def parse_rss(site):
