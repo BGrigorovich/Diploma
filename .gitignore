@@ -35,5 +35,4 @@ __pycache__/
 /utils/last_check_time.txt
 /celerybeat-schedule
 /sites.json
-/corpus_parser/views.py
 files/
