@@ -1,0 +1,14 @@
+#word-cloud-container {
+    position: relative;
+    width: 1000px;
+    height: 500px;
+}
+
+.word, .new-word {
+    position: absolute;
+    cursor: pointer;
+}
+
+#datepicker, #site-select, #articles {
+    position: relative;
+}

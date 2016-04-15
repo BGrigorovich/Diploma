@@ -7,7 +7,7 @@ from .forms import UploadFileForm
 from .models import CorpusFile
 
 
-def upload_file(request):
+def upload_file_view(request):
     args = {}
     args.update(csrf(request))
     if request.POST:
@@ -27,3 +27,7 @@ def upload_file(request):
     else:
         args['form'] = UploadFileForm()
     return render_to_response('fileupload.html', args)
+
+
+def word_cloud_view(reuqest):
+    return render_to_response('word_cloud.html')

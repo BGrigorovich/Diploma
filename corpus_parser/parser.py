@@ -26,7 +26,7 @@ def write_article(article, site):
     article_text = get_article_from_html(article.link, site.article_class_name_or_id)
 
     # fuck it
-    if 'function' in article_text:
+    if article_text and 'function' in article_text:
         return
 
     article_corpus = BaseCorpus(article_text)

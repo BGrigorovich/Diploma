@@ -106,9 +106,18 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+# STATIC_URL = os.path.join(BASE_DIR, 'static/')
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = BASE_DIR + '/files/'
+
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+)
 
 # Corpus files directories
 
