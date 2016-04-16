@@ -52,11 +52,13 @@ class ProbabilityCorpusTestCase(TestCase):
         self.assertEqual(actual_tokens_prob, expected_tokens_prob)
 
     def test_prob_difference(self):
-        actual_prob_difference = self.corpus.calc_prob_difference()
+        self.corpus.calc_prob_difference()
+        actual_prob_difference = self.corpus.prob_difference
         expected_prob_difference = {'порошенко': 0.45781046262238456, 'бігти': 0.4998421953328491}
         self.assertAlmostEqual(actual_prob_difference, expected_prob_difference)
 
     def test_get_top_trends(self):
+        self.corpus.calc_prob_difference()
         actual_top_trends = self.corpus.get_top_trends(trends_count=2)
         expected_top_trends = [('бігти', 0.4998421953328491), ('порошенко', 0.45781046262238456)]
         self.assertAlmostEqual(actual_top_trends, expected_top_trends)

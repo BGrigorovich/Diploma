@@ -16,7 +16,8 @@ def write_trends(file_name, diff):
 
 def calc_trends(file_name):
     corpus = ProbabilityCorpus.from_file(file_name)
-    diff = corpus.calc_prob_difference()
+    corpus.calc_prob_difference()
+    diff = corpus.prob_difference
 
     write_trends(file_name, diff)
     sorted_diff = sorted(diff.items(), key=operator.itemgetter(1), reverse=True)

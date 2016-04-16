@@ -1,12 +1,14 @@
 import datetime
 from django.contrib import admin
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 
 
 class Site(models.Model):
     name = models.CharField(max_length=50)
     rss_link = models.CharField(max_length=100)
     article_class_name_or_id = models.CharField(max_length=25, null=True, blank=True)
+    stop_phrase = models.CharField(max_length=50, null=True, blank=True)
     parse = models.BooleanField(default=True)
 
     def __str__(self):
@@ -21,7 +23,7 @@ class SiteAdmin(admin.ModelAdmin):
 class Article(models.Model):
     title = models.CharField(max_length=200)
     published = models.DateField()
-    link = models.CharField(max_length=150, db_index=True)
+    link = models.CharField(max_length=350, db_index=True)
     text = models.TextField()
     site = models.ForeignKey(Site, blank=True, null=True, on_delete=models.DO_NOTHING)
 
@@ -37,10 +39,11 @@ class ArticleAdmin(admin.ModelAdmin):
 class DailyTrend(models.Model):
     date = models.DateField(default=datetime.date.today() - datetime.timedelta(1))
     site = models.ForeignKey(Site, null=True, blank=True)
-    trends = models.TextField()
+    trends = JSONField()
+    counts = JSONField()
 
     def __str__(self):
-        return self.date.strftime('%a, %d %b %Y')
+        return '{0} {1}'.format(self.date.strftime('%a, %d %b %Y'), self.site)
 
 
 class DailyTrendAdmin(admin.ModelAdmin):

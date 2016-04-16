@@ -107,7 +107,7 @@ function getKyeWithMaxValue(dict) {
 
 function loadSitesSelect() {
     $.ajax({
-        url: "http://127.0.0.1:8000/sites?parse=true",
+        url: "/sites?parse=true",
         async: false,
         success: function (response) {
             window.sites = response;

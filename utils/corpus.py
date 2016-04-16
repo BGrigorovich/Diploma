@@ -15,10 +15,13 @@ class BaseCorpus:
         self.tokens = list()
 
     def tokenize(self):
+        print('corpus.text', self.text, end='\n')
         corpus_text = re.sub('–|«|»|\d+', ' ', self.text)
         tokens = [word.strip(string.punctuation) for word in corpus_text.split()]
+        print(1, tokens)
         # todo: figure out why I have the '' token
         tokens = list(filter(''.__ne__, tokens))
+        print(2, tokens)
         self.tokens = [token.lower() for token in tokens]
         return self
 
@@ -53,6 +56,7 @@ class ProbabilityCorpus(BaseCorpus):
         super().__init__(text)
         self.tokens_count = Counter()
         self.tokens_prob = dict()
+        self.prob_difference = dict()
 
     def calc_tokens_count(self):
         if self.tokens:
@@ -87,13 +91,24 @@ class ProbabilityCorpus(BaseCorpus):
         gold_corpus = GoldCorpusFileHandler(GOLD_CORPUS_DIR + 'ukr_prob.json')
         zero_prob = gold_corpus.calc_zero_count_tokens_prob(set(self.tokens))
 
-        probability_difference = dict()
         for word in self.tokens_prob:
-            probability_difference[word] = self.tokens_prob[word] - gold_corpus.tokens_prob.get(word, zero_prob)
-        return probability_difference
+            self.prob_difference[word] = self.tokens_prob[word] - gold_corpus.tokens_prob.get(word, zero_prob)
+        return self
 
     def get_top_trends(self, trends_count):
-        return sorted(self.calc_prob_difference().items(), key=operator.itemgetter(1), reverse=True)[:trends_count]
+        if self.prob_difference:
+            return sorted(self.prob_difference.items(), key=operator.itemgetter(1), reverse=True)[:trends_count]
+        else:
+            raise ValueError('Object attribute self.prob_difference is empty')
+
+    def get_top_counts(self, trends_count):
+        top_counts = dict()
+        if self.prob_difference:
+            for token, prob in self.get_top_trends(trends_count):
+                top_counts[token] = self.tokens_count[token]
+            return top_counts
+        else:
+            raise ValueError('Object attribute self.prob_difference is empty')
 
 
 class GoldCorpusFileHandler:

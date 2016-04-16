@@ -34,5 +34,6 @@ __pycache__/
 /utils/topic_modeling.py
 /utils/last_check_time.txt
 /celerybeat-schedule
+/Diploma/psql-auth.json
 /sites.json
 files/
