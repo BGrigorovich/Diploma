@@ -2,8 +2,11 @@ import datetime
 from contextlib import suppress
 
 from celery import shared_task
+from nltk.util import breadth_first
+
+from Diploma.settings import MIN_WORD_COUNT_TOTAL, MIN_WORD_COUNT_FOR_SITE
 from utils.corpus import ProbabilityCorpus
-from .models import Site, Article, DailyTrend
+from .models import Site, Article, DailyTrend, Word, WordCount
 from .parser import parse_rss
 
 
@@ -12,6 +15,22 @@ def parse_all():
     sites_to_parse = Site.objects.filter(parse=True)
     for site in sites_to_parse:
         parse_rss(site)
+
+
+@shared_task
+def write_words_count(corpus, site, date):
+    min_count = MIN_WORD_COUNT_FOR_SITE if site else MIN_WORD_COUNT_TOTAL
+
+    for word, count in corpus.tokens_count.most_common():
+        if count < min_count:
+            break
+
+        try:
+            _word = Word.objects.get(word=word)
+        except Word.DoesNotExist:
+            _word = Word(word=word)
+            _word.save()
+        WordCount(word=_word, site=site, date=date, count=count).save()
 
 
 @shared_task
@@ -28,10 +47,13 @@ def calculate_trends_for_site(trends_count, site, published):
                counts=dict(corpus.get_top_counts(trends_count)),
                site=site, date=published).save()
 
+    write_words_count(corpus, site, published)
+
 
 @shared_task
 def calculate_daily_trends(trends_count):
-    yesterday = datetime.date.today() - datetime.timedelta(1)
+    yesterday = datetime.date.today()
+    # yesterday = datetime.date.today() - datetime.timedelta(1)
     for site in Site.objects.filter(parse=True):
         with suppress(ValueError):
             calculate_trends_for_site(trends_count, site, yesterday)

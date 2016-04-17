@@ -43,8 +43,29 @@ class DailyTrend(models.Model):
     counts = JSONField()
 
     def __str__(self):
-        return '{0} {1}'.format(self.date.strftime('%a, %d %b %Y'), self.site)
+        return '{0}, {1}'.format(self.date.strftime('%d %b %Y'), self.site)
 
 
 class DailyTrendAdmin(admin.ModelAdmin):
     list_display = ('date', 'site')
+
+
+class Word(models.Model):
+    word = models.CharField(max_length=25)
+
+    def __str__(self):
+        return self.word
+
+
+class WordCount(models.Model):
+    word = models.ForeignKey(Word)
+    site = models.ForeignKey(Site, null=True, blank=True)
+    date = models.DateField(default=datetime.date.today() - datetime.timedelta(1))
+    count = models.IntegerField()
+
+    def __str__(self):
+        return '{0} ({1}, {2}): {3}'.format(self.word, self.date.strftime('%d %b %Y'), self.site, self.count)
+
+
+class WordCountAdmin(admin.ModelAdmin):
+    list_display = ('word', 'date', 'site', 'count')

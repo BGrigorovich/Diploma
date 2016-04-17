@@ -172,8 +172,8 @@ function initialize() {
         }
     });
 
-    loadWordCloud();
     loadSitesSelect();
+    loadWordCloud();
 }
 
 $(document).ready(function () {

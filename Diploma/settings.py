@@ -162,3 +162,8 @@ REST_FRAMEWORK = {
 # CORS headers
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+# Min word count to save in db
+
+MIN_WORD_COUNT_TOTAL = 20
+MIN_WORD_COUNT_FOR_SITE = 5
