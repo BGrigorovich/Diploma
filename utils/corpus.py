@@ -15,13 +15,10 @@ class BaseCorpus:
         self.tokens = list()
 
     def tokenize(self):
-        print('corpus.text', self.text, end='\n')
         corpus_text = re.sub('–|«|»|\d+', ' ', self.text)
         tokens = [word.strip(string.punctuation) for word in corpus_text.split()]
-        print(1, tokens)
         # todo: figure out why I have the '' token
         tokens = list(filter(''.__ne__, tokens))
-        print(2, tokens)
         self.tokens = [token.lower() for token in tokens]
         return self
 

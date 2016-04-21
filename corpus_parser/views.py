@@ -4,8 +4,8 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from .tasks import parse_all, calculate_daily_trends
-from .models import Article, Site, DailyTrend
-from .serializers import ArticleSerializer, SiteSerializer
+from .models import Article, Site, DailyTrend, Word, WordCount
+from .serializers import ArticleSerializer, SiteSerializer, WordCountSerializer
 from .filters import ArticleFilter
 
 
@@ -19,11 +19,10 @@ def test_trends(request):
     return HttpResponse('Testing trends')
 
 
-# works by site id or name
+# todo: rewrite as DRF view
 def daily_trends_view(request, date, site):
     if site:
-        if not re.match(r'^\d+$', site):
-            site = Site.objects.get(name=site)
+        site = Site.objects.get(name=site)
         trend = get_object_or_404(DailyTrend, date=date, site=site).trends
     else:
         trend = get_object_or_404(DailyTrend, date=date, site=None).trends
@@ -31,6 +30,18 @@ def daily_trends_view(request, date, site):
                             content_type='application/json; charset=utf-8')
     response['Access-Control-Allow-Origin'] = '*'
     return response
+
+
+class WordCountListView(generics.ListAPIView):
+    serializer_class = WordCountSerializer
+
+    def get_queryset(self):
+        word = Word.objects.get(word=self.kwargs['word'])
+        if self.kwargs['site']:
+            site = Site.objects.get(name=self.kwargs['site'])
+            return WordCount.objects.filter(word=word, site=site)
+        else:
+            return WordCount.objects.filter(word=word, site=None)
 
 
 class ArticleListView(generics.ListAPIView):
