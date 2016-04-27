@@ -2,7 +2,9 @@ import datetime
 from contextlib import suppress
 
 from celery import shared_task
+from django.core.exceptions import MultipleObjectsReturned
 from nltk.util import breadth_first
+from requests.exceptions import TooManyRedirects
 
 from Diploma.settings import MIN_WORD_COUNT_TOTAL, MIN_WORD_COUNT_FOR_SITE
 from utils.corpus import ProbabilityCorpus
@@ -14,7 +16,7 @@ from .parser import parse_rss
 def parse_all():
     sites_to_parse = Site.objects.filter(parse=True)
     for site in sites_to_parse:
-        with suppress(TypeError):
+        with suppress(TypeError, MultipleObjectsReturned):
             parse_rss(site)
 
 
@@ -56,6 +58,6 @@ def calculate_daily_trends(trends_count):
     # yesterday = datetime.date.today()
     yesterday = datetime.date.today() - datetime.timedelta(1)
     for site in Site.objects.filter(parse=True):
-        with suppress(ValueError):
+        with suppress(ValueError, TooManyRedirects):
             calculate_trends_for_site(trends_count, site, yesterday)
     calculate_trends_for_site(trends_count, None, yesterday)

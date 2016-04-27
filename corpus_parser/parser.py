@@ -45,7 +45,7 @@ def parse_rss(site):
     rss_feed = feedparser.parse(site.rss_link)
     new_articles = [Item(item['title'], item['link'], item['published']) for item in rss_feed['items']]
     for article in new_articles:
-        if not get_object_or_None(Article, link=article.link):
+        if not get_object_or_None(Article, link=article.link, site=site):
             # todo: log AttributeError
             with suppress(AttributeError):
                 write_article(article, site)
