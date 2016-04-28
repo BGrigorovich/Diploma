@@ -3,6 +3,7 @@ from contextlib import suppress
 
 from celery import shared_task
 from django.core.exceptions import MultipleObjectsReturned
+from django.db import IntegrityError, DataError
 from nltk.util import breadth_first
 from requests.exceptions import TooManyRedirects
 
@@ -58,6 +59,6 @@ def calculate_daily_trends(trends_count):
     # yesterday = datetime.date.today()
     yesterday = datetime.date.today() - datetime.timedelta(1)
     for site in Site.objects.filter(parse=True):
-        with suppress(ValueError, TooManyRedirects):
+        with suppress(ValueError, TooManyRedirects, IntegrityError, DataError):
             calculate_trends_for_site(trends_count, site, yesterday)
     calculate_trends_for_site(trends_count, None, yesterday)
