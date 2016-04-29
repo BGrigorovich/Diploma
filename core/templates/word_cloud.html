@@ -9,15 +9,23 @@
     <script src="{% static 'js/word-cloud.js' %}"></script>
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 </head>
 <body>
-<div id="word-cloud-container"></div>
-<select id="site-select" title="Виберіть сайт">
+<label>Видання:
+<select id="site-select">
     <option value="">Всі видання</option>
 </select>
+</label>
+<label>
+    Дата:
+    <input type="text" id="datepicker" size="30">
+</label>
 
-<div id="datepicker"></div>
+<div class="row">
+    <div class="col-sm-12 col-md-10 col-lg-8" id="word-cloud-container"></div>
+</div>
 <div id="articles-container"></div>
 </body>
 </html>

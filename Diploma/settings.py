@@ -103,7 +103,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
 
@@ -114,7 +114,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-# STATIC_URL = os.path.join(BASE_DIR, 'static/')
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = BASE_DIR + '/files/'
@@ -152,6 +151,7 @@ CELERYBEAT_SCHEDULE = {
         'args': (50,)
     }
 }
+
 
 # Django REST Framework
 

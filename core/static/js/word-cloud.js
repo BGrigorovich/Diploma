@@ -51,12 +51,14 @@ function testIntersectsByAxis() {
 
 function putTrend(wordText, font) {
     var wordCloud = $("#word-cloud-container");
+    wordCloud.height(wordCloud.width() * 9 / 16);
     var word = $("<div></div>");
     wordCloud.append(word);
     word.text(wordText);
     word.css("font-size", font + "px;");
     word.addClass("new-word");  // doesn't work without it
-
+    //console.log(word);
+    console.log(word.offsetHeight);
     do {
         var left = Math.floor(Math.random() * (wordCloud.width() - word.width()));
         var top = Math.floor(Math.random() * (wordCloud.height() - word.height()));
@@ -163,19 +165,21 @@ function loadWordCloud() {
     });
 }
 
-function initialize() {
+function loadDatePicker() {
     $("#datepicker").datepicker({
-        maxDate: yesterday(),
         defaultDate: yesterday(),
+        maxDate: yesterday(),
+        dateFormat: "DD, d MM, yy",
+        showOtherMonths: true,
+        selectOtherMonths: true,
         onSelect: function (dateText, inst) {
             loadWordCloud();
         }
-    });
-
-    loadSitesSelect();
-    loadWordCloud();
+    }).datepicker("setDate", yesterday());
 }
 
 $(document).ready(function () {
-    initialize();
+    loadDatePicker();
+    loadSitesSelect();
+    loadWordCloud();
 });
