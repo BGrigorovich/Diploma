@@ -11,20 +11,46 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <style>
+
+        body {
+            font: 10px sans-serif;
+        }
+
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+
+        .x.axis path {
+            display: none;
+        }
+
+        .line {
+            fill: none;
+            stroke: steelblue;
+            stroke-width: 1.5px;
+        }
+
+    </style>
 </head>
 <body>
 <label>Видання:
-<select id="site-select">
-    <option value="">Всі видання</option>
-</select>
+    <select id="site-select">
+        <option value="">Всі видання</option>
+    </select>
 </label>
 <label>
     Дата:
     <input type="text" id="datepicker" size="30">
 </label>
 
-<div class="row">
-    <div class="col-sm-12 col-md-10 col-lg-8" id="word-cloud-container"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12 col-md-10 col-lg-8" id="word-cloud-container"></div>
+    </div>
 </div>
 <div id="articles-container"></div>
 </body>
