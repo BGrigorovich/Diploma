@@ -14,6 +14,15 @@ function loadSiteSelect() {
     });
 }
 
+function alreadyPlotted(array, item) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i]['label'] == item['label']) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function loadChart(word, site) {
     var chart = $("#word-count-chart");
     $.ajax({
@@ -28,51 +37,53 @@ function loadChart(word, site) {
                 $.each(response, function (i, val) {
                     series['data'].push([new Date(val['date']).getTime(), val['count']]);
                 });
-                data.push(series);
-                $.plot(chart, data,
-                    {
-                        xaxis: {
-                            mode: "time",
-                            minTickSize: [1, "day"]
-                        },
-                        series: {
-                            shadowSize: 0,
-                            points: {show: true},
-                            lines: {show: true}
-                        },
-                        grid: {
-                            hoverable: true
+
+                if (!alreadyPlotted(data, series)) {
+                    data.push(series);
+                    $.plot(chart, data,
+                        {
+                            xaxis: {
+                                mode: "time",
+                                minTickSize: [1, "day"]
+                            },
+                            series: {
+                                shadowSize: 0,
+                                points: {show: true},
+                                lines: {show: true}
+                            },
+                            grid: {
+                                hoverable: true
+                            }
+                        });
+
+                    $("<div id='tooltip'></div>").css({
+                        position: "absolute",
+                        display: "none",
+                        border: "1px solid #fdd",
+                        padding: "2px",
+                        "background-color": "#fee",
+                        opacity: 0.80
+                    }).appendTo("body");
+
+                    chart.bind("plothover", function (event, pos, item) {
+                        if (item) {
+                            var date = new Date(item.datapoint[0]);
+                            var x = date.getDate() + " " + ukrDate["monthNames"][date.getMonth()],
+                                y = item.datapoint[1];
+
+                            //$("#tooltip").html(item.series.label + "<br>" + x + "<br>" + y + " згадувань")
+                            $("#tooltip").html(x + "<br>" + y + " згадувань")
+                                .css({top: item.pageY + 5, left: item.pageX + 5})
+                                .fadeIn(200);
+                        } else {
+                            $("#tooltip").hide();
                         }
                     });
-
-                $("<div id='tooltip'></div>").css({
-                    position: "absolute",
-                    display: "none",
-                    border: "1px solid #fdd",
-                    padding: "2px",
-                    "background-color": "#fee",
-                    opacity: 0.80
-                }).appendTo("body");
-
-                chart.bind("plothover", function (event, pos, item) {
-                    if (item) {
-                        var date = new Date(item.datapoint[0]);
-                        var x = date.getDate() + " " + ukrDate["monthNames"][date.getMonth()],
-                            y = item.datapoint[1];
-
-                        //$("#tooltip").html(item.series.label + "<br>" + x + "<br>" + y + " згадувань")
-                        $("#tooltip").html(x + "<br>" + y + " згадувань")
-                            .css({top: item.pageY + 5, left: item.pageX + 5})
-                            .fadeIn(200);
-                    } else {
-                        $("#tooltip").hide();
-                    }
-                });
+                }
             }
         }
     });
 }
-
 
 function showRemoveButton() {
     if ($(".control").length == 1) {
@@ -95,6 +106,7 @@ function loadControls() {
         loadChart($(this).val(), site);
     });
 
+    // todo: remove chart lines on click
     $(".remove-chart-control").bind("click", function () {
         $(this).parent(".control").remove();
         showRemoveButton();
