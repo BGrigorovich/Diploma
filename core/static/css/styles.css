@@ -1,4 +1,4 @@
-#word-cloud-container {
+#word-cloud-container, #word-count-graph-container {
     position: relative;
 }
 

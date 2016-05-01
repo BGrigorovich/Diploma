@@ -107,24 +107,7 @@ function getKyeWithMaxValue(dict) {
     });
 }
 
-function loadSitesSelect() {
-    $.ajax({
-        url: "/sites?parse=true",
-        async: false,
-        success: function (response) {
-            window.sites = response;
-        }
-    });
-    $.each(sites, function (index, site) {
-        $('#site-select').append($("<option></option>")
-            .attr("value", site.name)
-            .text(site.name));
-    });
 
-    $('#site-select').change(function () {
-        loadWordCloud();
-    });
-}
 
 function yesterday() {
     var yesterday = new Date();
@@ -182,6 +165,10 @@ $(document).ready(function () {
     loadDatePicker();
     loadSitesSelect();
     loadWordCloud();
+
+    $('#site-select').change(function () {
+        loadWordCloud();
+    });
 });
 
 $.datepicker.regional['ua'] = {

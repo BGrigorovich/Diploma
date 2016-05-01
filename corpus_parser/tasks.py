@@ -59,6 +59,6 @@ def calculate_daily_trends(trends_count):
     # yesterday = datetime.date.today()
     yesterday = datetime.date.today() - datetime.timedelta(1)
     for site in Site.objects.filter(parse=True):
-        with suppress(ValueError, TooManyRedirects, IntegrityError, DataError):
+        with suppress(ValueError, TooManyRedirects, IntegrityError, DataError, KeyError, ConnectionResetError):
             calculate_trends_for_site(trends_count, site, yesterday)
     calculate_trends_for_site(trends_count, None, yesterday)

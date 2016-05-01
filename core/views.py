@@ -30,4 +30,8 @@ def upload_file_view(request):
 
 
 def word_cloud_view(reuqest):
-    return render_to_response('word_cloud.html')
+    return render_to_response('word-cloud.html')
+
+
+def word_count_graph_view(reuqest):
+    return render_to_response('word-count-graph.html')

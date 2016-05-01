@@ -39,9 +39,9 @@ class WordCountListView(generics.ListAPIView):
         word = Word.objects.get(word=self.kwargs['word'])
         if self.kwargs['site']:
             site = Site.objects.get(name=self.kwargs['site'])
-            return WordCount.objects.filter(word=word, site=site)
+            return WordCount.objects.filter(word=word, site=site).order_by('date')
         else:
-            return WordCount.objects.filter(word=word, site=None)
+            return WordCount.objects.filter(word=word, site=None).order_by('date')
 
 
 class ArticleListView(generics.ListAPIView):
