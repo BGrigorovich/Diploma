@@ -1,14 +1,8 @@
-function loadSitesSelect() {
-    $.ajax({
-        url: "/sites?parse=true",
-        async: false,
-        success: function (response) {
-            window.sites = response;
-        }
-    });
-    $.each(sites, function (index, site) {
-        $('#site-select').append($("<option></option>")
-            .attr("value", site.name)
-            .text(site.name));
-    });
-}
+var ukrDate = {
+    monthNames: ['Січня','Лютого','Березня','Квітня','Травня','Червня', 'Липня','Серпня','Вересня','Жовтня','Листопада','Грудня'], // set month names
+    monthNamesShort: ['Січ','Лют','Бер','Кві','Тра','Чер','Лип','Сер','Вер','Жовт','Лист','Гру'],
+    dayNames: ['Неділя','Понеділок','Вівторок','Середа','Четвер',"П'ятниця",'Субота'],
+    dayNamesShort: ['Нд','Пн','Вт','Ср','Чт','Пт','Сб'],
+    dayNamesMin: ['Нд','Пн','Вт','Ср','Чт','Пт','Сб'],
+    dateFormat: 'dd/mm/yy'
+};

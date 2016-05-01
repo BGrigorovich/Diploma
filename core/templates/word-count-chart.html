@@ -1,0 +1,33 @@
+{% extends "main.html" %}
+
+{% block head %}
+{% load staticfiles %}
+<script src="{% static 'js/word-count-chart.js' %}"></script>
+<script src="{% static 'js/lib/jquery.flot.min.js' %}"></script>
+<script src="{% static 'js/lib/jquery.flot.time.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12 col-md-10 col-lg-8" id="word-count-chart"></div>
+    </div>
+</div>
+<div class="control-panel">
+    <div class="control">
+        <label>Видання:
+            <select class="site-select">
+                <option value="">Всі видання</option>
+            </select>
+        </label>
+        <label>Слово:
+            <input type="text" class="_word">
+        </label>
+        <button type="button" class="btn btn-warning badge remove-chart-control" style="display: none;"><i
+                class="glyphicon glyphicon-remove"></i></button>
+        <br>
+    </div>
+</div>
+<button type="button" class="btn btn-info badge" id="add-chart-control"><i class="glyphicon glyphicon-plus"></i>
+</button>
+{% endblock %}

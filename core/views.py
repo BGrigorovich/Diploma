@@ -34,4 +34,4 @@ def word_cloud_view(reuqest):
 
 
 def word_count_graph_view(reuqest):
-    return render_to_response('word-count-graph.html')
+    return render_to_response('word-count-chart.html')

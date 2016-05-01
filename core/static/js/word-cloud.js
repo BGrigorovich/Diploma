@@ -77,6 +77,21 @@ function putArticle(article) {
     articleContainer.append(articleDiv);
 }
 
+function loadSitesSelect() {
+    $.ajax({
+        url: "/sites?parse=true",
+        async: false,
+        success: function (response) {
+            window.sites = response;
+        }
+    });
+    $.each(sites, function (index, site) {
+        $('#site-select').append($("<option></option>")
+            .attr("value", site.name)
+            .text(site.name));
+    });
+}
+
 function loadArticles(word) {
     var site = $("option:selected").val();
     $(".article").remove();
@@ -171,12 +186,5 @@ $(document).ready(function () {
     });
 });
 
-$.datepicker.regional['ua'] = {
-    monthNames: ['Січня','Лютого','Березня','Квітня','Травня','Червня', 'Липня','Серпня','Вересня','Жовтня','Листопада','Грудня'], // set month names
-    monthNamesShort: ['Січ','Лют','Бер','Кві','Тра','Чер','Лип','Сер','Вер','Жовт','Лист','Гру'],
-    dayNames: ['Неділя','Понеділок','Вівторок','Середа','Четвер',"П'ятниця",'Субота'],
-    dayNamesShort: ['Нд','Пн','Вт','Ср','Чт','Пт','Сб'],
-    dayNamesMin: ['Нд','Пн','Вт','Ср','Чт','Пт','Сб'],
-    dateFormat: 'dd/mm/yy'
-};
+$.datepicker.regional['ua'] = ukrDate;
 $.datepicker.setDefaults($.datepicker.regional['ua']);
