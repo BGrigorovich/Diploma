@@ -23,15 +23,14 @@ function alreadyPlotted(array, item) {
     return false;
 }
 
-function loadChart(word, site) {
-    var chart = $("#word-count-chart");
+function getChartData(word, site) {
     $.ajax({
         url: "/word-counts/" + word + "/" + site,
         async: false,
         success: function (response) {
             var series = {
                 data: [],
-                label: site ? word + " (" + site + ")" : word
+                label: site ? word + " (" + site + ")" : word + " (всі видання)"
             };
             if (response.length) {
                 $.each(response, function (i, val) {
@@ -40,47 +39,51 @@ function loadChart(word, site) {
 
                 if (!alreadyPlotted(data, series)) {
                     data.push(series);
-                    $.plot(chart, data,
-                        {
-                            xaxis: {
-                                mode: "time",
-                                minTickSize: [1, "day"]
-                            },
-                            series: {
-                                shadowSize: 0,
-                                points: {show: true},
-                                lines: {show: true}
-                            },
-                            grid: {
-                                hoverable: true
-                            }
-                        });
-
-                    $("<div id='tooltip'></div>").css({
-                        position: "absolute",
-                        display: "none",
-                        border: "1px solid #fdd",
-                        padding: "2px",
-                        "background-color": "#fee",
-                        opacity: 0.80
-                    }).appendTo("body");
-
-                    chart.bind("plothover", function (event, pos, item) {
-                        if (item) {
-                            var date = new Date(item.datapoint[0]);
-                            var x = date.getDate() + " " + ukrDate["monthNames"][date.getMonth()],
-                                y = item.datapoint[1];
-
-                            //$("#tooltip").html(item.series.label + "<br>" + x + "<br>" + y + " згадувань")
-                            $("#tooltip").html(x + "<br>" + y + " згадувань")
-                                .css({top: item.pageY + 5, left: item.pageX + 5})
-                                .fadeIn(200);
-                        } else {
-                            $("#tooltip").hide();
-                        }
-                    });
+                    loadChart();
                 }
             }
+        }
+    });
+}
+
+function loadChart() {
+    var chart = $("#word-count-chart");
+    $.plot(chart, window.data,
+        {
+            xaxis: {
+                mode: "time",
+                minTickSize: [1, "day"]
+            },
+            series: {
+                shadowSize: 0,
+                points: {show: true},
+                lines: {show: true}
+            },
+            grid: {
+                hoverable: true
+            }
+        });
+
+    $("<div id='tooltip'></div>").css({
+        position: "absolute",
+        display: "none",
+        border: "1px solid #fdd",
+        padding: "2px",
+        "background-color": "#fee",
+        opacity: 0.80
+    }).appendTo("body");
+
+    chart.bind("plothover", function (event, pos, item) {
+        if (item) {
+            var date = new Date(item.datapoint[0]);
+            var x = date.getDate() + " " + ukrDate["monthNames"][date.getMonth()],
+                y = item.datapoint[1];
+
+            $("#tooltip").html(x + "<br>" + y + " згадувань")
+                .css({top: item.pageY + 5, left: item.pageX + 5})
+                .fadeIn(200);
+        } else {
+            $("#tooltip").hide();
         }
     });
 }
@@ -97,19 +100,32 @@ function loadControls() {
     $(".site-select").bind("change", function () {
         var word = $(this).parent().siblings("label").children("._word").val();
         if (word) {
-            loadChart(word, $(this).val());
+            getChartData(word, $(this).val());
         }
     });
 
     $("._word").bind("change", function () {
         var site = $(this).parent().siblings("label").children(".site-select").val();
-        loadChart($(this).val(), site);
+        getChartData($(this).val(), site);
     });
 
-    // todo: remove chart lines on click
     $(".remove-chart-control").bind("click", function () {
-        $(this).parent(".control").remove();
+        var $control = $(this).parent();
+        var word = $control.find("._word").val();
+        var site = $control.find(".site-select").val();
+        var label = site ? word + " (" + site + ")" : word + " (всі видання)";
+        $control.remove();
         showRemoveButton();
+
+        for (var i = 0; i < window.data.length; i++) {
+            console.log(label);
+            if (window.data[i]['label'] == label) {
+                window.data[i]['label'] = "";
+                window.data[i]['data'] = [];
+            }
+        }
+        console.log(window.data);
+        loadChart();
     });
 }
 
