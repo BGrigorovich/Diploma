@@ -97,21 +97,36 @@ function showRemoveButton() {
 }
 
 function loadControls() {
-    $(".site-select").bind("change", function () {
-        var word = $(this).parent().siblings("label").children("._word").val();
-        if (word) {
-            getChartData(word, $(this).val());
-        }
+    // todo: remove previous chart before build new (update data series)
+    //(function () {
+    //var previous;
+    //$.each($(".site-select"), function () {
+    //    $(this).focus(function() {
+    //        console.log(1);
+    //    });
+    //});
+    $(".site-select").on("focus", function () {
+        console.log($(this).val());
+        //var previous = $(this).val();
     });
-
-    $("._word").bind("change", function () {
-        var site = $(this).parent().siblings("label").children(".site-select").val();
+    //.bind("change", function () {
+    //    console.log($(this).prev());
+    //    $(this).blur();
+    //    previous = $(this).val();
+    //var word = $(this).parent().siblings("label").children(".word-input").val();
+    //if (word) {
+    //    getChartData(word, $(this).val());
+    //}
+    //});
+    //})();
+    $(".word-input").bind("change", function () {
+        var site = $(this).siblings(".site-select").val();
         getChartData($(this).val(), site);
     });
 
     $(".remove-chart-control").bind("click", function () {
         var $control = $(this).parent();
-        var word = $control.find("._word").val();
+        var word = $control.find(".word-input").val();
         var site = $control.find(".site-select").val();
         var label = site ? word + " (" + site + ")" : word + " (всі видання)";
         $control.remove();
@@ -130,6 +145,7 @@ function loadControls() {
 }
 
 function initialize() {
+    $('body').css('overflowY', 'scroll');
     $.ajax({
         url: "/sites?parse=true",
         async: false,
@@ -140,26 +156,25 @@ function initialize() {
 
     var chart = $("#word-count-chart");
     chart.height(chart.width() * 9 / 16);
-
+    $.plot(chart, [[]], {});
     loadControls();
     loadSiteSelect();
-    //showRemoveButton();
 
     $("#add-chart-control").click(function () {
         $(".control-panel").append(
-            '<div class="control">\
-                <label>Видання:\
-                    <select class="site-select">\
-                        <option value="">Всі видання</option>\
-                    </select>\
-                </label>\
-                <label>Слово:\
-                    <input type="text" class="_word">\
-                </label>\
-                <button type="button" class="btn btn-warning badge remove-chart-control"><i\
-                        class="glyphicon glyphicon-remove"></i></button>\
-                <br>\
-            </div>');
+            '<p>\
+                <div class="control form-inline">\
+                    <label>Видання:</label>\
+                        <select class="site-select form-control">\
+                            <option value="">Всі видання</option>\
+                        </select>\
+                    <label>Слово:</label>\
+                        <input type="text" class="word-input form-control">\
+                    <button type="button" class="btn btn-warning badge remove-chart-control"><i\
+                            class="glyphicon glyphicon-remove"></i></button>\
+                    <br>\
+                </div>\
+            </p>');
         loadSiteSelect();
         loadControls();
         showRemoveButton();

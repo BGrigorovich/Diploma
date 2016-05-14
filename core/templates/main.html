@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     {% load staticfiles %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="{% static 'js/general.js' %}"></script>
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
@@ -20,5 +21,10 @@
 <body>
 {% block content %}
 {% endblock %}
+<footer class="modal-footer">
+    <div class="container">
+        <p>© 2016 <a class="btn-linkedin" href="https://github.com/BGrigorovich">Bohdan Hryhorovych</a></p>
+    </div>
+</footer>
 </body>
 </html>

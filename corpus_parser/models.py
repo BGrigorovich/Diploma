@@ -23,7 +23,7 @@ class SiteAdmin(admin.ModelAdmin):
 class Article(models.Model):
     title = models.CharField(max_length=200)
     published = models.DateField()
-    link = models.CharField(max_length=350, db_index=True)
+    link = models.CharField(max_length=350, db_index=True, unique=True)
     text = models.TextField()
     site = models.ForeignKey(Site, blank=True, null=True, on_delete=models.DO_NOTHING)
 

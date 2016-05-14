@@ -23,7 +23,7 @@ function isIntersectsWithWords(left, width, top, height) {
     var words = $(".word");
     var isIntersects = false;
     [].forEach.call(words, function (word) {
-        if (isTwoRectanglesIntersects(word.offsetLeft, word.offsetWidth, word.offsetTop, word.offsetHeight, left, width, top, height)) {
+        if (isTwoRectanglesIntersects(word.offsetLeft, word.offsetWidth + 10, word.offsetTop, word.offsetHeight + 10, left, width + 10, top, height + 10)) {
             isIntersects = true;
         }
     });
@@ -69,12 +69,11 @@ function putTrend(wordText, font) {
     word.addClass("word");
 }
 
-function putArticle(article) {
-    var articleContainer = $("#articles-container");
+function putArticle(article, $articleContainer) {
     var articleDiv = $("<div></div>");
     articleDiv.addClass("article");
     articleDiv.html("<p><a href='" + article.link + "' target='_blank'>" + article.title + "</a></p>");
-    articleContainer.append(articleDiv);
+    $articleContainer.append(articleDiv);
 }
 
 function loadSitesSelect() {
@@ -102,9 +101,10 @@ function loadArticles(word) {
             window.articles = response;
         }
     });
-
+    var $articleContainer = $("#articles-container");
+    $articleContainer.css('display', 'block');
     $.each(articles, function (index, article) {
-        putArticle(article);
+        putArticle(article, $articleContainer);
     });
 }
 
@@ -121,7 +121,6 @@ function getKyeWithMaxValue(dict) {
         return dict[a] > dict[b] ? a : b
     });
 }
-
 
 
 function yesterday() {

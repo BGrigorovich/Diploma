@@ -36,5 +36,6 @@ __pycache__/
 /celerybeat-schedule
 /Diploma/psql-auth.json
 /core/static/js/lib
+/codewars.py
 /sites.json
 files/

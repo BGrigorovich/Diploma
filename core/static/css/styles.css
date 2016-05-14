@@ -10,3 +10,15 @@
 #datepicker, #site-select, #articles {
     position: relative;
 }
+
+#articles-container {
+    display: none;
+}
+
+.modal-footer {
+    margin-top: 50px;
+}
+
+#word-cloud-container {
+    margin-bottom: 20px;
+}

@@ -1,5 +1,4 @@
 import json
-import re
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
@@ -19,7 +18,6 @@ def test_trends(request):
     return HttpResponse('Testing trends')
 
 
-# todo: rewrite as DRF view
 def daily_trends_view(request, date, site):
     if site:
         site = Site.objects.get(name=site)
