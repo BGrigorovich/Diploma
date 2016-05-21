@@ -17,7 +17,7 @@ from .parser import parse_rss
 def parse_all():
     sites_to_parse = Site.objects.filter(parse=True)
     for site in sites_to_parse:
-        with suppress(TypeError, MultipleObjectsReturned):
+        with suppress(TypeError, MultipleObjectsReturned, KeyError):
             parse_rss(site)
 
 

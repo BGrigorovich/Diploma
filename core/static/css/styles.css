@@ -5,6 +5,7 @@
 .word, .new-word {
     position: absolute;
     cursor: pointer;
+    color: #90c5f0;
 }
 
 #datepicker, #site-select, #articles {

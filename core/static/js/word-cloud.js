@@ -51,14 +51,11 @@ function testIntersectsByAxis() {
 
 function putTrend(wordText, font) {
     var wordCloud = $("#word-cloud-container");
-    wordCloud.height(wordCloud.width() * 9 / 16);
     var word = $("<div></div>");
     wordCloud.append(word);
     word.text(wordText);
-    word.css("font-size", font + "px;");
+    word.css("font-size", font);
     word.addClass("new-word");  // doesn't work without it
-    //console.log(word);
-    console.log(word.offsetHeight);
     do {
         var left = Math.floor(Math.random() * (wordCloud.width() - word.width()));
         var top = Math.floor(Math.random() * (wordCloud.height() - word.height()));
@@ -109,6 +106,13 @@ function loadArticles(word) {
 }
 
 
+function getSmallestProb() {
+    var trendsArr = Object.keys(trends).map(function (key) {
+        return trends[key];
+    });
+    return Math.min.apply(null, trendsArr);
+}
+
 function getLargestProb() {
     var trendsArr = Object.keys(trends).map(function (key) {
         return trends[key];
@@ -116,7 +120,7 @@ function getLargestProb() {
     return Math.max.apply(null, trendsArr);
 }
 
-function getKyeWithMaxValue(dict) {
+function getKeyWithMaxValue(dict) {
     return Object.keys(dict).reduce(function (a, b) {
         return dict[a] > dict[b] ? a : b
     });
@@ -146,13 +150,16 @@ function loadWordCloud() {
         }
     });
 
-    var maxFontSize = 40;
+    var $wordCloud = $("#word-cloud-container");
+    $wordCloud.height($wordCloud.width() * 9 / 16);
+
+    var maxFontSize = Math.round($wordCloud.height() / 10);
     var largestProb = getLargestProb();
     for (var key in trends) {
         trends[key] = Math.ceil(trends[key] / largestProb * maxFontSize);
     }
     for (var i = Object.keys(trends).length - 1; i >= 0; i--) {
-        var k = getKyeWithMaxValue(trends);
+        var k = getKeyWithMaxValue(trends);
         putTrend(k, trends[k]);
         delete trends[k];
     }
