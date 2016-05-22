@@ -105,28 +105,6 @@ function loadArticles(word) {
     });
 }
 
-
-function getSmallestProb() {
-    var trendsArr = Object.keys(trends).map(function (key) {
-        return trends[key];
-    });
-    return Math.min.apply(null, trendsArr);
-}
-
-function getLargestProb() {
-    var trendsArr = Object.keys(trends).map(function (key) {
-        return trends[key];
-    });
-    return Math.max.apply(null, trendsArr);
-}
-
-function getKeyWithMaxValue(dict) {
-    return Object.keys(dict).reduce(function (a, b) {
-        return dict[a] > dict[b] ? a : b
-    });
-}
-
-
 function yesterday() {
     var yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
@@ -146,22 +124,27 @@ function loadWordCloud() {
         url: "/trends/" + dateToAPIFormat(date) + "/" + site,
         async: false,
         success: function (response) {
-            window.trends = response;
+            window.trends = [];
+            $.each(response, function (word, prob) {
+                window.trends.push([word, prob]);
+            });
+            window.trends.sort(function (a, b) {
+                return b[1] - a[1];
+            });
         }
     });
 
     var $wordCloud = $("#word-cloud-container");
     $wordCloud.height($wordCloud.width() * 9 / 16);
 
-    var maxFontSize = Math.round($wordCloud.height() / 10);
-    var largestProb = getLargestProb();
-    for (var key in trends) {
-        trends[key] = Math.ceil(trends[key] / largestProb * maxFontSize);
-    }
-    for (var i = Object.keys(trends).length - 1; i >= 0; i--) {
-        var k = getKeyWithMaxValue(trends);
-        putTrend(k, trends[k]);
-        delete trends[k];
+
+    var maxFontSize = Math.round($wordCloud.height() / 20);
+    var FONT_STEP = maxFontSize / 15;
+
+    for (var i = 0; i < window.trends.length; i++) {
+        window.trends[i][1] = maxFontSize - (FONT_STEP * Math.floor(i / 5));
+        console.log(window.trends[i][1]);
+        putTrend(window.trends[i][0], window.trends[i][1]);
     }
 
     $(".word").click(function () {
