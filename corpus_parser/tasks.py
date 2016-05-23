@@ -56,9 +56,8 @@ def calculate_trends_for_site(trends_count, site, published):
 
 @shared_task
 def calculate_daily_trends(trends_count):
-    # yesterday = datetime.date.today()
     yesterday = datetime.date.today() - datetime.timedelta(1)
-    for site in Site.objects.filter(parse=True):
-        with suppress(BaseException):
-            calculate_trends_for_site(trends_count, site, yesterday)
-    calculate_trends_for_site(trends_count, None, yesterday)
+    with suppress(BaseException):
+        for site in Site.objects.filter(parse=True):
+                calculate_trends_for_site(trends_count, site, yesterday)
+        calculate_trends_for_site(trends_count, None, yesterday)
