@@ -5,7 +5,7 @@ import re
 import string
 from collections import Counter
 import redis
-from Diploma.settings import GOLD_CORPUS_DIR
+from Diploma.settings import GOLD_CORPUS_DIR, REDIS_PASSWORD
 from utils.interpolation import interpolate, interpolate_token_count_of_count
 
 
@@ -24,7 +24,7 @@ class BaseCorpus:
 
     def remove_stopwords(self):
         if self.tokens:
-            with open(GOLD_CORPUS_DIR + 'stopwords') as stopwords_file:
+            with open(GOLD_CORPUS_DIR + 'stopwords', encoding='utf-8') as stopwords_file:
                 stopwords = set([word[:-1] for word in stopwords_file])
                 self.tokens = [token for token in self.tokens if token not in stopwords]
                 return self
@@ -33,7 +33,7 @@ class BaseCorpus:
 
     def lemmatize(self):
         if self.tokens:
-            r = redis.StrictRedis('localhost', port=6379, db=10)
+            r = redis.StrictRedis('localhost', password=REDIS_PASSWORD, port=6379, db=10)
             for i in range(len(self.tokens)):
                 word_lemma = r.get(self.tokens[i])
                 if word_lemma:

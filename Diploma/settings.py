@@ -19,10 +19,12 @@ from celery.schedules import crontab
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+AUTH = json.loads(open(BASE_DIR + '/Diploma/auth.json').read())
+
 # Quick-start development settings - unsuitable for production
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '@5q1qnjp80r^7jx$61z=i8p58lv^k&u%kn_$rw_a8ped5*w80w'
+SECRET_KEY = AUTH['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -86,14 +88,12 @@ WSGI_APPLICATION = 'Diploma.wsgi.application'
 
 # Database
 
-PSQL_AUTH = json.loads(open(BASE_DIR + '/Diploma/psql-auth.json').read())
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'diploma',
-        'USER': PSQL_AUTH['USER'],
-        'PASSWORD': PSQL_AUTH['PASSWORD'],
+        'USER': AUTH['PSQL']['USER'],
+        'PASSWORD': AUTH['PSQL']['PASSWORD'],
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -152,6 +152,10 @@ CELERYBEAT_SCHEDULE = {
     }
 }
 
+CELERY_ACCEPT_CONTENT = ['json']
+
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 # Django REST Framework
 
@@ -167,3 +171,5 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 MIN_WORD_COUNT_TOTAL = 20
 MIN_WORD_COUNT_FOR_SITE = 5
+
+REDIS_PASSWORD = AUTH['REDIS']['PASSWORD']

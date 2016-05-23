@@ -51,7 +51,7 @@ def calculate_trends_for_site(trends_count, site, published):
         DailyTrend(trends=dict(corpus.get_top_trends(trends_count)),
                    counts=dict(corpus.get_top_counts(trends_count)),
                    site=site, date=published).save()
-    
+
         write_words_count(corpus, site, published)
 
 
