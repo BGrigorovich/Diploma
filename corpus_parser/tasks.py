@@ -39,25 +39,25 @@ def write_words_count(corpus, site, date):
 
 @shared_task
 def calculate_trends_for_site(trends_count, site, published):
-    if site:
-        daily_articles = Article.objects.filter(published=published, site=site)
-    else:
-        daily_articles = Article.objects.filter(published=published)
+    with suppress(BaseException):
+        if site:
+            daily_articles = Article.objects.filter(published=published, site=site)
+        else:
+            daily_articles = Article.objects.filter(published=published)
 
-    texts = ' '.join([article.text for article in daily_articles])
-    corpus = ProbabilityCorpus(texts)
-    corpus.calc_prob_difference()
-    DailyTrend(trends=dict(corpus.get_top_trends(trends_count)),
-               counts=dict(corpus.get_top_counts(trends_count)),
-               site=site, date=published).save()
-
-    write_words_count(corpus, site, published)
+        texts = ' '.join([article.text for article in daily_articles])
+        corpus = ProbabilityCorpus(texts)
+        corpus.calc_prob_difference()
+        DailyTrend(trends=dict(corpus.get_top_trends(trends_count)),
+                   counts=dict(corpus.get_top_counts(trends_count)),
+                   site=site, date=published).save()
+    
+        write_words_count(corpus, site, published)
 
 
 @shared_task
 def calculate_daily_trends(trends_count):
     yesterday = datetime.date.today() - datetime.timedelta(1)
-    with suppress(BaseException):
-        for site in Site.objects.filter(parse=True):
-                calculate_trends_for_site(trends_count, site, yesterday)
-        calculate_trends_for_site(trends_count, None, yesterday)
+    for site in Site.objects.filter(parse=True):
+            calculate_trends_for_site(trends_count, site, yesterday)
+    calculate_trends_for_site(trends_count, None, yesterday)
