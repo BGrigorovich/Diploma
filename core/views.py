@@ -9,4 +9,5 @@ def word_cloud_view(request):
 
 
 def word_count_graph_view(request):
-    return render_to_response('word-count-chart.html')
+    context = {'sites': Site.objects.all()}
+    return render_to_response('word-count-chart.html', context=context)

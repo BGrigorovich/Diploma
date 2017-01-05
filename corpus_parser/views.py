@@ -35,8 +35,8 @@ class WordCountListView(generics.ListAPIView):
 
     def get_queryset(self):
         word = Word.objects.get(word=self.kwargs['word'])
-        if self.kwargs['site']:
-            site = Site.objects.get(name=self.kwargs['site'])
+        if self.kwargs['site_id']:
+            site = Site.objects.get(id=self.kwargs['site_id'])
             return WordCount.objects.filter(word=word, site=site).order_by('date')
         else:
             return WordCount.objects.filter(word=word, site=None).order_by('date')

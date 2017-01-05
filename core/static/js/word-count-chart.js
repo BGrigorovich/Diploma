@@ -23,13 +23,13 @@ function isAlreadyPlotted(array, item) {
     return false;
 }
 
-function getChartData(word, site) {
+function getChartData(word, siteId, siteName) {
     $.ajax({
-        url: "/word-counts/" + word + "/" + site,
+        url: "/word-counts/" + word + "/" + siteId,
         success: function (response) {
             var series = {
                 data: [],
-                label: site ? word + " (" + site + ")" : word + " (всі видання)"
+                label: siteId ? word + " (" + siteName + ")" : word + " (всі видання)"
             };
             if (response.length) {
                 $.each(response, function (i, val) {
@@ -129,8 +129,9 @@ $(document).ready(function () {
     }).datepicker("setDate", yesterday());
 
     $(document).on('change', '.word-input', function () {
-        var site = $(this).siblings(".site-select").val();
-        getChartData($(this).val(), site);
+        var siteId = $(this).siblings(".site-select").val();
+        var siteName = $(this).siblings(".site-select").find('option:selected').data('name');
+        getChartData($(this).val(), siteId, siteName);
     });
 
     $(document).on('click', '.remove-chart-control', function () {
@@ -151,20 +152,10 @@ $(document).ready(function () {
     });
 
     $("#add-chart-control").click(function () {
-        $(".control-panel").append(
-            '<p>\
-                <div class="control form-inline">\
-                    <label>Видання:</label>\
-                        <select class="site-select form-control">\
-                            <option value="">Всі видання</option>\
-                        </select>\
-                    <label>Слово:</label>\
-                        <input type="text" class="word-input form-control">\
-                    <button type="button" class="btn btn-warning badge remove-chart-control"><i\
-                            class="glyphicon glyphicon-remove"></i></button>\
-                    <br>\
-                </div>\
-            </p>');
+        $('.control').eq(-1).clone().appendTo('#control-panel');
+        var $newControl = $('.control').eq(-1);
+        $newControl.find('input').val('');
+        $newControl.find('select').val('');
         loadSiteSelect();
         showRemoveButton();
     });

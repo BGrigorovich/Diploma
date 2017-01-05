@@ -16,7 +16,7 @@
             <div class="col-sm-12 col-md-10 col-lg-8 col-md-offset-1 col-lg-offset-2" id="word-count-chart"></div>
         </div>
     </div>
-    <div class="text-center">
+    <div class="text-center" style="padding-bottom: 10px">
         <div class="form-inline">
             <label> Від:</label>
             <input class="form-control" type="text" id="datepicker-from">
@@ -24,24 +24,20 @@
             <input class="form-control" type="text" id="datepicker-to">
         </div>
     </div>
-    <div class="control-panel text-center">
-        <p>
-
-        <div class="control form-inline">
+    <div class="text-center" id="control-panel">
+        <div class="control form-inline" style="padding-bottom: 10px;">
             <label>Видання:</label>
             <select class="site-select form-control">
-                <option value="">Всі видання</option>
+                <option data-name="" value="">Всі видання</option>
+                {% for site in sites %}
+                    <option data-name="{{ site.name }}" value="{{ site.id }}">{{ site.name }}</option>
+                {% endfor %}
             </select>
-
             <label>Слово:</label>
             <input type="text" class="word-input form-control">
-
             <button type="button" class="btn btn-warning badge remove-chart-control" style="display: none;"><i
                     class="glyphicon glyphicon-remove"></i></button>
-
-            <br>
         </div>
-        </p>
     </div>
     <div class="text-center">
         <button type="button" class="btn btn-info" id="add-chart-control"><i class="glyphicon glyphicon-plus"></i>
