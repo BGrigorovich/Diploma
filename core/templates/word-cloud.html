@@ -2,10 +2,7 @@
 
 {% block head %}
     {% load staticfiles %}
-    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="{% static 'js/word-cloud.js' %}"></script>
-
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 {% endblock %}
 
 {% block title %}Хмара слів{% endblock %}
@@ -32,7 +29,7 @@
     <div class="container-fluid">
         <div class="row">
             <div id="articles-container" class="col-md-offset-2 col-lg-offset-3">
-                <h3 disabled="disabled">Статті по темі:</h3>
+                <h3 disabled="disabled" id="articles-container-header"></h3>
             </div>
         </div>
     </div>

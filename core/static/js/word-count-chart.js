@@ -184,4 +184,17 @@ function initialize() {
 
 $(document).ready(function () {
     initialize();
+    $("#datepicker-from").datepicker({
+        dateFormat: "DD, d MM, yy",
+        showOtherMonths: true,
+        selectOtherMonths: true
+    }).datepicker("setDate", yesterday());
+    initialize();
+    $("#datepicker-to").datepicker({
+        defaultDate: yesterday(),
+        maxDate: yesterday(),
+        dateFormat: "DD, d MM, yy",
+        showOtherMonths: true,
+        selectOtherMonths: true
+    }).datepicker("setDate", yesterday());
 });

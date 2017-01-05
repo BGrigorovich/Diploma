@@ -6,3 +6,12 @@ var ukrDate = {
     dayNamesMin: ['Нд','Пн','Вт','Ср','Чт','Пт','Сб'],
     dateFormat: 'dd/mm/yy'
 };
+
+$.datepicker.regional['ua'] = ukrDate;
+$.datepicker.setDefaults($.datepicker.regional['ua']);
+
+function yesterday() {
+    var yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    return yesterday;
+}
