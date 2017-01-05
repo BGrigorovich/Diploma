@@ -14,7 +14,7 @@ function loadSiteSelect() {
     });
 }
 
-function alreadyPlotted(array, item) {
+function isAlreadyPlotted(array, item) {
     for (var i = 0; i < array.length; i++) {
         if (array[i]['label'] == item['label']) {
             return true;
@@ -26,7 +26,6 @@ function alreadyPlotted(array, item) {
 function getChartData(word, site) {
     $.ajax({
         url: "/word-counts/" + word + "/" + site,
-        async: false,
         success: function (response) {
             var series = {
                 data: [],
@@ -37,7 +36,7 @@ function getChartData(word, site) {
                     series['data'].push([new Date(val['date']).getTime(), val['count']]);
                 });
 
-                if (!alreadyPlotted(data, series)) {
+                if (!isAlreadyPlotted(data, series)) {
                     data.push(series);
                     loadChart();
                 }
@@ -96,7 +95,7 @@ function showRemoveButton() {
     }
 }
 
-function loadControls() {
+//function loadControls() {
     // todo: remove previous chart before build new (update data series)
     //(function () {
     //var previous;
@@ -105,10 +104,10 @@ function loadControls() {
     //        console.log(1);
     //    });
     //});
-    $(".site-select").on("focus", function () {
-        console.log($(this).val());
+    //$(".site-select").on("focus", function () {
+    //    console.log($(this).val());
         //var previous = $(this).val();
-    });
+    //});
     //.bind("change", function () {
     //    console.log($(this).prev());
     //    $(this).blur();
@@ -119,30 +118,7 @@ function loadControls() {
     //}
     //});
     //})();
-    $(".word-input").bind("change", function () {
-        var site = $(this).siblings(".site-select").val();
-        getChartData($(this).val(), site);
-    });
-
-    $(".remove-chart-control").bind("click", function () {
-        var $control = $(this).parent();
-        var word = $control.find(".word-input").val();
-        var site = $control.find(".site-select").val();
-        var label = site ? word + " (" + site + ")" : word + " (всі видання)";
-        $control.remove();
-        showRemoveButton();
-
-        for (var i = 0; i < window.data.length; i++) {
-            console.log(label);
-            if (window.data[i]['label'] == label) {
-                window.data[i]['label'] = "";
-                window.data[i]['data'] = [];
-            }
-        }
-        console.log(window.data);
-        loadChart();
-    });
-}
+//}
 
 function initialize() {
     $('body').css('overflowY', 'scroll');
@@ -157,28 +133,7 @@ function initialize() {
     var chart = $("#word-count-chart");
     chart.height(chart.width() * 9 / 16);
     $.plot(chart, [[]], {});
-    loadControls();
     loadSiteSelect();
-
-    $("#add-chart-control").click(function () {
-        $(".control-panel").append(
-            '<p>\
-                <div class="control form-inline">\
-                    <label>Видання:</label>\
-                        <select class="site-select form-control">\
-                            <option value="">Всі видання</option>\
-                        </select>\
-                    <label>Слово:</label>\
-                        <input type="text" class="word-input form-control">\
-                    <button type="button" class="btn btn-warning badge remove-chart-control"><i\
-                            class="glyphicon glyphicon-remove"></i></button>\
-                    <br>\
-                </div>\
-            </p>');
-        loadSiteSelect();
-        loadControls();
-        showRemoveButton();
-    });
 }
 
 
@@ -197,4 +152,45 @@ $(document).ready(function () {
         showOtherMonths: true,
         selectOtherMonths: true
     }).datepicker("setDate", yesterday());
+
+    $(document).on('change', '.word-input', function () {
+        var site = $(this).siblings(".site-select").val();
+        getChartData($(this).val(), site);
+    });
+
+    $(document).on('click', '.remove-chart-control', function () {
+        var $control = $(this).parent();
+        var word = $control.find(".word-input").val();
+        var site = $control.find(".site-select").val();
+        var label = site ? word + " (" + site + ")" : word + " (всі видання)";
+        $control.remove();
+        showRemoveButton();
+
+        for (var i = 0; i < window.data.length; i++) {
+            if (window.data[i]['label'] == label) {
+                window.data[i]['label'] = "";
+                window.data[i]['data'] = [];
+            }
+        }
+        loadChart();
+    });
+
+    $("#add-chart-control").click(function () {
+        $(".control-panel").append(
+            '<p>\
+                <div class="control form-inline">\
+                    <label>Видання:</label>\
+                        <select class="site-select form-control">\
+                            <option value="">Всі видання</option>\
+                        </select>\
+                    <label>Слово:</label>\
+                        <input type="text" class="word-input form-control">\
+                    <button type="button" class="btn btn-warning badge remove-chart-control"><i\
+                            class="glyphicon glyphicon-remove"></i></button>\
+                    <br>\
+                </div>\
+            </p>');
+        loadSiteSelect();
+        showRemoveButton();
+    });
 });
