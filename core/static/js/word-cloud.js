@@ -1,6 +1,4 @@
 var trends;
-var sites;
-var articles;
 
 /**
  * checks if rectangle 2 intersects with rectangle 1 on given axis
@@ -52,21 +50,6 @@ function putArticle(article, $articleContainer) {
     articleDiv.addClass("article");
     articleDiv.html("<p><a href='" + article.link + "' target='_blank'>" + article.title + "</a> (" + article.site + ")</p>");
     $articleContainer.append(articleDiv);
-}
-
-function loadSitesSelect() {
-    $.ajax({
-        url: "/sites?parse=true",
-        async: false,
-        success: function (response) {
-            window.sites = response;
-        }
-    });
-    $.each(sites, function (index, site) {
-        $('#site-select').append($("<option></option>")
-            .attr("value", site.name)
-            .text(site.name));
-    });
 }
 
 function loadArticles(word) {
@@ -134,7 +117,6 @@ function loadDatePicker() {
 
 $(document).ready(function () {
     loadDatePicker();
-    loadSitesSelect();
     loadWordCloud();
 
     $(document).on('change', '#site-select', function () {

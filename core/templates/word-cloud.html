@@ -15,6 +15,9 @@
             <label>Видання:</label>
             <select class="form-control" id="site-select">
                 <option value="">Всі видання</option>
+                {% for site in sites %}
+                    <option value="{{ site.id }}">{{ site.name }}</option>
+                {% endfor %}
             </select>
             <label> Дата:</label>
             <input class="form-control" type="text" id="datepicker" size="30">

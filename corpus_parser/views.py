@@ -18,9 +18,9 @@ def test_trends(request):
     return HttpResponse('Testing trends')
 
 
-def daily_trends_view(request, date, site):
-    if site:
-        site = Site.objects.get(name=site)
+def daily_trends_view(request, date, site_id):
+    if site_id:
+        site = Site.objects.get(id=site_id)
         trend = get_object_or_404(DailyTrend, date=date, site=site).trends
     else:
         trend = get_object_or_404(DailyTrend, date=date, site=None).trends

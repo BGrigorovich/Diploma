@@ -95,31 +95,6 @@ function showRemoveButton() {
     }
 }
 
-//function loadControls() {
-    // todo: remove previous chart before build new (update data series)
-    //(function () {
-    //var previous;
-    //$.each($(".site-select"), function () {
-    //    $(this).focus(function() {
-    //        console.log(1);
-    //    });
-    //});
-    //$(".site-select").on("focus", function () {
-    //    console.log($(this).val());
-        //var previous = $(this).val();
-    //});
-    //.bind("change", function () {
-    //    console.log($(this).prev());
-    //    $(this).blur();
-    //    previous = $(this).val();
-    //var word = $(this).parent().siblings("label").children(".word-input").val();
-    //if (word) {
-    //    getChartData(word, $(this).val());
-    //}
-    //});
-    //})();
-//}
-
 function initialize() {
     $('body').css('overflowY', 'scroll');
     $.ajax({
