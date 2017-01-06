@@ -34,7 +34,7 @@ function putTrend(wordText, font) {
     wordCloud.append(word);
     word.text(wordText);
     word.css("font-size", font);
-    word.addClass("new-word");  // doesn't work without it
+    word.addClass("new-word");
     do {
         var left = Math.floor(Math.random() * (wordCloud.width() - word.width()));
         var top = Math.floor(Math.random() * (wordCloud.height() - word.height()));
