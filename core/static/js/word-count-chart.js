@@ -1,18 +1,4 @@
 var data = [];
-var sites = [];
-
-function loadSiteSelect() {
-    $.each($(".site-select"), function () {
-        var siteSelect = $(this);
-        if (siteSelect.find("option").length != sites.length + 1) {
-            $.each(sites, function (index, site) {
-                siteSelect.append($("<option></option>")
-                    .attr("value", site.name)
-                    .text(site.name));
-            });
-        }
-    });
-}
 
 function isAlreadyPlotted(array, item) {
     for (var i = 0; i < array.length; i++) {
@@ -46,8 +32,8 @@ function getChartData(word, siteId, siteName) {
 }
 
 function loadChart() {
-    var chart = $("#word-count-chart");
-    $.plot(chart, window.data,
+    var $chart = $("#word-count-chart");
+    $.plot($chart, window.data,
         {
             xaxis: {
                 mode: "time",
@@ -71,20 +57,6 @@ function loadChart() {
         "background-color": "#fee",
         opacity: 0.80
     }).appendTo("body");
-
-    chart.bind("plothover", function (event, pos, item) {
-        if (item) {
-            var date = new Date(item.datapoint[0]);
-            var x = date.getDate() + " " + ukrDate["monthNames"][date.getMonth()],
-                y = item.datapoint[1];
-
-            $("#tooltip").html(x + "<br>" + y + " згадувань")
-                .css({top: item.pageY + 5, left: item.pageX + 5})
-                .fadeIn(200);
-        } else {
-            $("#tooltip").hide();
-        }
-    });
 }
 
 function showRemoveButton() {
@@ -95,31 +67,28 @@ function showRemoveButton() {
     }
 }
 
-function initialize() {
+$(document).ready(function () {
     $('body').css('overflowY', 'scroll');
-    $.ajax({
-        url: "/sites?parse=true",
-        async: false,
-        success: function (response) {
-            window.sites = response;
+    var $chart = $("#word-count-chart");
+    $chart.height($chart.width() * 9 / 16);
+    var startDate = new Date('2016-11-23');
+    $.plot($chart, [[]], {
+        xaxis: {
+            mode: "time",
+            minTickSize: [1, "day"],
+            min: startDate,
+            max: yesterday()
         }
     });
 
-    var chart = $("#word-count-chart");
-    chart.height(chart.width() * 9 / 16);
-    $.plot(chart, [[]], {});
-    loadSiteSelect();
-}
-
-
-$(document).ready(function () {
-    initialize();
     $("#datepicker-from").datepicker({
+        defaultDate: startDate,
+        minDate: startDate,
+        maxDate: yesterday(),
         dateFormat: "DD, d MM, yy",
         showOtherMonths: true,
         selectOtherMonths: true
-    }).datepicker("setDate", yesterday());
-    initialize();
+    }).datepicker("setDate", startDate);
     $("#datepicker-to").datepicker({
         defaultDate: yesterday(),
         maxDate: yesterday(),
@@ -151,12 +120,25 @@ $(document).ready(function () {
         loadChart();
     });
 
+    $(document).on("plothover", $chart, function (event, pos, item) {
+        if (item) {
+            var date = new Date(item.datapoint[0]);
+            var x = date.getDate() + " " + ukrDate["monthNames"][date.getMonth()],
+                y = item.datapoint[1];
+
+            $("#tooltip").html(x + "<br>" + y + " згадувань")
+                .css({top: item.pageY + 5, left: item.pageX + 5})
+                .fadeIn(200);
+        } else {
+            $("#tooltip").hide();
+        }
+    });
+
     $("#add-chart-control").click(function () {
         $('.control').eq(-1).clone().appendTo('#control-panel');
         var $newControl = $('.control').eq(-1);
         $newControl.find('input').val('');
         $newControl.find('select').val('');
-        loadSiteSelect();
         showRemoveButton();
     });
 });
