@@ -10,8 +10,18 @@ function isAlreadyPlotted(array, item) {
 }
 
 function getChartData(word, siteId, siteName, $formControl) {
+    function showError () {
+        var $wordInput = $formControl.find('.word-input');
+        $wordInput.attr('title', 'Не вдається побудувати графік для слова.');
+        $wordInput.tooltip({
+            position: {my: 'left+15 center', at: 'right center'}
+        }).off(['mouseover mouseout', 'focusin focusout']);
+        $wordInput.tooltip('open');
+        $formControl.addClass('has-error');
+    }
+
     $.ajax({
-        url: "/word-counts/" + word + "/" + siteId,
+        url: "/word-counts/" + word.toLowerCase() + "/" + siteId,
         success: function (response) {
             var series = {
                 data: [],
@@ -27,20 +37,17 @@ function getChartData(word, siteId, siteName, $formControl) {
                     loadChart();
                 }
                 var $wordInput = $formControl.find('.word-input');
-                $wordInput.removeAttr('title');
-                $wordInput.tooltip('destroy');
-                $formControl.removeClass('has-error');
+                try {
+                    $wordInput.removeAttr('title');
+                    $wordInput.tooltip('destroy');
+                    $formControl.removeClass('has-error');
+                } catch (e) {
+                }
+            } else {
+                showError();
             }
         },
-        error: function () {
-            var $wordInput = $formControl.find('.word-input');
-            $wordInput.attr('title', 'Не вдається побудувати графік для слова.');
-            $wordInput.tooltip({
-                position: {my: 'left+15 center', at: 'right center'}
-            }).off(['mouseover mouseout', 'focusin focusout']);
-            $wordInput.tooltip('open');
-            $formControl.addClass('has-error');
-        }
+        error: showError
     });
 }
 
@@ -51,6 +58,9 @@ function loadChart() {
             xaxis: {
                 mode: "time",
                 minTickSize: [1, "day"]
+            },
+            yaxis: {
+                min: 5
             },
             series: {
                 shadowSize: 0,
@@ -91,6 +101,10 @@ $(document).ready(function () {
             minTickSize: [1, "day"],
             min: startDate,
             max: yesterday()
+        },
+        yaxis: {
+            min: 5,
+            max: 20
         }
     });
 
@@ -153,6 +167,7 @@ $(document).ready(function () {
         var $newControl = $('.control').eq(-1);
         $newControl.find('input').val('');
         $newControl.find('select').val('');
+        $newControl.removeClass('has-error');
         showRemoveButton();
     });
 });
