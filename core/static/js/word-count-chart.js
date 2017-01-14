@@ -155,7 +155,10 @@ $(document).ready(function () {
         var $control = $(this).parent();
         var word = $control.find(".word-input").val();
         var site = $control.find(".site-select option:selected").text().trim();
-        var label = site ? word + " (" + site + ")" : word + " (всі видання)";
+        if (site == 'Всі видання') {
+            site = site.toLowerCase();
+        }
+        var label = word + ' (' + site + ')';
         $control.remove();
         showRemoveButton();
 
