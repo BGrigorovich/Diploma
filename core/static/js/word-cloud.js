@@ -69,10 +69,6 @@ function loadArticles(word) {
     });
 }
 
-function dateToAPIFormat(date) {
-    return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-}
-
 function loadWordCloud() {
     var date = $("#datepicker").datepicker('getDate');
     var site = $("option:selected").val();

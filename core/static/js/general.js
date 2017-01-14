@@ -15,3 +15,7 @@ function yesterday() {
     yesterday.setDate(yesterday.getDate() - 1);
     return yesterday;
 }
+
+function dateToAPIFormat(date) {
+    return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+}

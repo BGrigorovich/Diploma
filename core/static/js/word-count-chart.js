@@ -9,7 +9,7 @@ function isAlreadyPlotted(array, item) {
     return false;
 }
 
-function getChartData(word, siteId, siteName) {
+function getChartData(word, siteId, siteName, $formControl) {
     $.ajax({
         url: "/word-counts/" + word + "/" + siteId,
         success: function (response) {
@@ -26,7 +26,20 @@ function getChartData(word, siteId, siteName) {
                     data.push(series);
                     loadChart();
                 }
+                var $wordInput = $formControl.find('.word-input');
+                $wordInput.removeAttr('title');
+                $wordInput.tooltip('destroy');
+                $formControl.removeClass('has-error');
             }
+        },
+        error: function () {
+            var $wordInput = $formControl.find('.word-input');
+            $wordInput.attr('title', 'Не вдається побудувати графік для слова.');
+            $wordInput.tooltip({
+                position: {my: 'left+15 center', at: 'right center'}
+            }).off(['mouseover mouseout', 'focusin focusout']);
+            $wordInput.tooltip('open');
+            $formControl.addClass('has-error');
         }
     });
 }
@@ -98,9 +111,10 @@ $(document).ready(function () {
     }).datepicker("setDate", yesterday());
 
     $(document).on('change', '.word-input', function () {
-        var siteId = $(this).siblings(".site-select").val();
-        var siteName = $(this).siblings(".site-select").find('option:selected').data('name');
-        getChartData($(this).val(), siteId, siteName);
+        var $this = $(this);
+        var siteId = $this.siblings(".site-select").val();
+        var siteName = $this.siblings(".site-select").find('option:selected').data('name');
+        getChartData($this.val(), siteId, siteName, $this.parent());
     });
 
     $(document).on('click', '.remove-chart-control', function () {
