@@ -1,7 +1,10 @@
 import json
+import datetime
+
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
+
 from .tasks import parse_all, calculate_daily_trends
 from .models import Article, Site, DailyTrend, Word, WordCount
 from .serializers import ArticleSerializer, SiteSerializer, WordCountSerializer
@@ -35,11 +38,10 @@ class WordCountListView(generics.ListAPIView):
 
     def get_queryset(self):
         word = Word.objects.get(word=self.kwargs['word'])
-        if self.kwargs['site_id']:
-            site = Site.objects.get(id=self.kwargs['site_id'])
-            return WordCount.objects.filter(word=word, site=site).order_by('date')
-        else:
-            return WordCount.objects.filter(word=word, site=None).order_by('date')
+        date_from = datetime.datetime.strptime(self.request.GET.get('date-from'), '%Y-%m-%d').date()
+        date_to = datetime.datetime.strptime(self.request.GET.get('date-to'), '%Y-%m-%d').date()
+        site = Site.objects.get(id=self.kwargs['site_id']) if self.kwargs['site_id'] else None
+        return WordCount.objects.filter(word=word, site=site, date__gte=date_from, date__lte=date_to).order_by('date')
 
 
 class ArticleListView(generics.ListAPIView):

@@ -9,19 +9,27 @@ function isAlreadyPlotted(array, item) {
     return false;
 }
 
-function getChartData(word, siteId, siteName, $formControl) {
+function loadChart($control) {
     function showError () {
-        var $wordInput = $formControl.find('.word-input');
+        var $wordInput = $control.find('.word-input');
         $wordInput.attr('title', 'Не вдається побудувати графік для слова.');
         $wordInput.tooltip({
             position: {my: 'left+15 center', at: 'right center'}
         }).off(['mouseover mouseout', 'focusin focusout']);
         $wordInput.tooltip('open');
-        $formControl.addClass('has-error');
+        $control.addClass('has-error');
     }
 
+    var word = $control.find('.word-input').val();
+    if (!word) {
+        return false;
+    }
+    var siteId = $control.find(".site-select").val();
+    var siteName = $control.find(".site-select").find('option:selected').data('name');
+    var dateFrom = $("#datepicker-from").datepicker('getDate');
+    var dateTo = $("#datepicker-to").datepicker('getDate');
     $.ajax({
-        url: "/word-counts/" + word.toLowerCase() + "/" + siteId,
+        url: "/word-counts/" + word.toLowerCase() + "/" + siteId + '?date-from=' + dateToAPIFormat(dateFrom) + '&date-to=' + dateToAPIFormat(dateTo),
         success: function (response) {
             var series = {
                 data: [],
@@ -31,16 +39,16 @@ function getChartData(word, siteId, siteName, $formControl) {
                 $.each(response, function (i, val) {
                     series['data'].push([new Date(val['date']).getTime(), val['count']]);
                 });
-
                 if (!isAlreadyPlotted(data, series)) {
                     data.push(series);
-                    loadChart();
+                    plot();
                 }
-                var $wordInput = $formControl.find('.word-input');
+
+                var $wordInput = $control.find('.word-input');
                 try {
                     $wordInput.removeAttr('title');
                     $wordInput.tooltip('destroy');
-                    $formControl.removeClass('has-error');
+                    $control.removeClass('has-error');
                 } catch (e) {
                 }
             } else {
@@ -51,7 +59,14 @@ function getChartData(word, siteId, siteName, $formControl) {
     });
 }
 
-function loadChart() {
+function reloadChart() {
+    window.data = [];
+    $('.control').each(function(i, control) {
+        loadChart($(control));
+    });
+}
+
+function plot() {
     var $chart = $("#word-count-chart");
     $.plot($chart, window.data,
         {
@@ -114,21 +129,26 @@ $(document).ready(function () {
         maxDate: yesterday(),
         dateFormat: "DD, d MM, yy",
         showOtherMonths: true,
-        selectOtherMonths: true
+        selectOtherMonths: true,
+        onSelect: function (dateText, inst) {
+            $("#datepicker-to").datepicker('option', 'minDate', $("#datepicker-from").datepicker('getDate'));
+            reloadChart();
+        }
     }).datepicker("setDate", startDate);
     $("#datepicker-to").datepicker({
         defaultDate: yesterday(),
         maxDate: yesterday(),
         dateFormat: "DD, d MM, yy",
         showOtherMonths: true,
-        selectOtherMonths: true
+        selectOtherMonths: true,
+        onSelect: function (dateText, inst) {
+            $("#datepicker-from").datepicker('option', 'maxDate', $("#datepicker-to").datepicker('getDate'));
+            reloadChart();
+        }
     }).datepicker("setDate", yesterday());
 
     $(document).on('change', '.word-input', function () {
-        var $this = $(this);
-        var siteId = $this.siblings(".site-select").val();
-        var siteName = $this.siblings(".site-select").find('option:selected').data('name');
-        getChartData($this.val(), siteId, siteName, $this.parent());
+        loadChart($(this).parent());
     });
 
     $(document).on('click', '.remove-chart-control', function () {
@@ -145,14 +165,14 @@ $(document).ready(function () {
                 window.data[i]['data'] = [];
             }
         }
-        loadChart();
+        plot();
     });
 
     $(document).on("plothover", $chart, function (event, pos, item) {
         if (item) {
             var date = new Date(item.datapoint[0]);
-            var x = date.getDate() + " " + ukrDate["monthNames"][date.getMonth()],
-                y = item.datapoint[1];
+            var x = date.getDate() + " " + ukrDate["monthNames"][date.getMonth()];
+            var y = item.datapoint[1];
 
             $("#tooltip").html(x + "<br>" + y + " згадувань")
                 .css({top: item.pageY + 5, left: item.pageX + 5})
