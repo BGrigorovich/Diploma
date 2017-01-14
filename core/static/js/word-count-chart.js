@@ -134,7 +134,7 @@ $(document).ready(function () {
     $(document).on('click', '.remove-chart-control', function () {
         var $control = $(this).parent();
         var word = $control.find(".word-input").val();
-        var site = $control.find(".site-select").val();
+        var site = $control.find(".site-select option:selected").text().trim();
         var label = site ? word + " (" + site + ")" : word + " (всі видання)";
         $control.remove();
         showRemoveButton();
