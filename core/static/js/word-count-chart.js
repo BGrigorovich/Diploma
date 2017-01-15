@@ -2,7 +2,7 @@ var data = [];
 
 function isAlreadyPlotted(array, item) {
     for (var i = 0; i < array.length; i++) {
-        if (array[i]['label'] == item['label']) {
+        if (array[i]['label'].toLowerCase() == item['label'].toLowerCase()) {
             return true;
         }
     }
@@ -10,9 +10,9 @@ function isAlreadyPlotted(array, item) {
 }
 
 function loadChart($control) {
-    function showError () {
+    function showError (msg) {
         var $wordInput = $control.find('.word-input');
-        $wordInput.attr('title', 'Не вдається побудувати графік для слова.');
+        $wordInput.attr('title', msg);
         $wordInput.tooltip({
             position: {my: 'left+15 center', at: 'right center'}
         }).off(['mouseover mouseout', 'focusin focusout']);
@@ -39,23 +39,27 @@ function loadChart($control) {
                 $.each(response, function (i, val) {
                     series['data'].push([new Date(val['date']).getTime(), val['count']]);
                 });
+                var $wordInput = $control.find('.word-input');
+
                 if (!isAlreadyPlotted(data, series)) {
                     data.push(series);
                     plot();
-                }
-
-                var $wordInput = $control.find('.word-input');
-                try {
-                    $wordInput.removeAttr('title');
-                    $wordInput.tooltip('destroy');
-                    $control.removeClass('has-error');
-                } catch (e) {
+                    try {
+                        $wordInput.removeAttr('title');
+                        $wordInput.tooltip('destroy');
+                        $control.removeClass('has-error');
+                    } catch (e) {
+                    }
+                } else {
+                    showError('Графік для слова вже побудований.')
                 }
             } else {
-                showError();
+                showError('Не вдається побудувати графік для слова.');
             }
         },
-        error: showError
+        error: function() {
+            showError('Не вдається побудувати графік для слова.')
+        }
     });
 }
 
