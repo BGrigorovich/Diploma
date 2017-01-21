@@ -1,12 +1,21 @@
 var data = [];
 
-function isAlreadyPlotted(array, item) {
-    for (var i = 0; i < array.length; i++) {
-        if (array[i]['label'].toLowerCase() == item['label'].toLowerCase()) {
+function isAlreadyPlotted(item) {
+    for (var i = 0; i < data.length; i++) {
+        if (data[i]['label'].toLowerCase() == item['label'].toLowerCase()) {
             return true;
         }
     }
     return false;
+}
+
+function changedItemIndex(previousLabel) {
+    for (var i = 0; i < data.length; i++) {
+        if (data[i]['label'].toLowerCase() == previousLabel.toLowerCase()) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 function loadChart($control) {
@@ -26,7 +35,6 @@ function loadChart($control) {
         showError('Введіть слово, щоб побудувати графік.');
         return false;
     }
-    $wordInput.attr('data-previous', $wordInput.val());
     var $siteSelect = $control.find(".site-select");
     var siteId = $siteSelect.val();
     var siteName = $siteSelect.find('option:selected').data('name');
@@ -44,11 +52,18 @@ function loadChart($control) {
                 $.each(response, function (i, val) {
                     series['data'].push([new Date(val['date']).getTime(), val['count']]);
                 });
-                var $wordInput = $control.find('.word-input');
 
-                if (!isAlreadyPlotted(data, series)) {
-                    data.push(series);
+                if (!isAlreadyPlotted(series)) {
+                    var chartIndex = changedItemIndex($wordInput.attr('data-previous') + ' (' + $siteSelect.attr('data-previous') + ')');
+                    if (chartIndex == -1) {
+                        data.push(series);
+                    } else {
+                        data[chartIndex] = series;
+                    }
                     plot();
+                    $wordInput.attr('data-previous', word);
+                    $siteSelect.attr('data-previous', siteId ? siteName : 'всі видання');
+
                     try {
                         $wordInput.removeAttr('title');
                         $wordInput.tooltip('destroy');
@@ -159,6 +174,18 @@ $(document).ready(function () {
         loadChart($(this).parent());
     });
 
+    $(document).on('change', '.site-select', function () {
+        if ($(this).siblings('.word-input').val()) {
+            loadChart($(this).parent());
+        }
+    });
+
+    $(document).on('keypress', '.word-input', function (e) {
+        if (e.which == 13 && $(this).val()) {
+            loadChart($(this).parent());
+        }
+    });
+
     $(document).on('click', '.remove-chart-btn', function () {
         var $control = $(this).parent();
         var word = $control.find(".word-input").val();
@@ -196,8 +223,8 @@ $(document).ready(function () {
     $("#add-chart-control").click(function () {
         $('.control').eq(-1).clone().appendTo('#control-panel');
         var $newControl = $('.control').eq(-1);
-        $newControl.find('input').val('');
-        $newControl.find('select').val('');
+        $newControl.find('.word-input').val('').attr('data-previous', '');
+        $newControl.find('.site-select').val('').attr('data-previous', 'всі видання');
         $newControl.removeClass('has-error');
         showRemoveButton();
     });
