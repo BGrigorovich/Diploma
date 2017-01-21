@@ -19,3 +19,5 @@ function yesterday() {
 function dateToAPIFormat(date) {
     return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 }
+
+var startDate = new Date('2016-11-23');

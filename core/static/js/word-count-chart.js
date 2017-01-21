@@ -10,7 +10,7 @@ function isAlreadyPlotted(array, item) {
 }
 
 function loadChart($control) {
-    function showError (msg) {
+    function showError(msg) {
         var $wordInput = $control.find('.word-input');
         $wordInput.attr('title', msg);
         $wordInput.tooltip({
@@ -20,14 +20,19 @@ function loadChart($control) {
         $control.addClass('has-error');
     }
 
-    var word = $control.find('.word-input').val();
+    var $wordInput = $control.find('.word-input');
+    var word = $wordInput.val();
     if (!word) {
+        showError('Введіть слово, щоб побудувати графік.');
         return false;
     }
-    var siteId = $control.find(".site-select").val();
-    var siteName = $control.find(".site-select").find('option:selected').data('name');
+    $wordInput.attr('data-previous', $wordInput.val());
+    var $siteSelect = $control.find(".site-select");
+    var siteId = $siteSelect.val();
+    var siteName = $siteSelect.find('option:selected').data('name');
     var dateFrom = $("#datepicker-from").datepicker('getDate');
     var dateTo = $("#datepicker-to").datepicker('getDate');
+
     $.ajax({
         url: "/word-counts/" + word.toLowerCase() + "/" + siteId + '?date-from=' + dateToAPIFormat(dateFrom) + '&date-to=' + dateToAPIFormat(dateTo),
         success: function (response) {
@@ -51,13 +56,13 @@ function loadChart($control) {
                     } catch (e) {
                     }
                 } else {
-                    showError('Графік для слова вже побудований.')
+                    showError('Графік для слова вже побудований.');
                 }
             } else {
                 showError('Не вдається побудувати графік для слова.');
             }
         },
-        error: function() {
+        error: function () {
             showError('Не вдається побудувати графік для слова.')
         }
     });
@@ -65,7 +70,7 @@ function loadChart($control) {
 
 function reloadChart() {
     window.data = [];
-    $('.control').each(function(i, control) {
+    $('.control').each(function (i, control) {
         loadChart($(control));
     });
 }
@@ -113,7 +118,6 @@ $(document).ready(function () {
     $('body').css('overflowY', 'scroll');
     var $chart = $("#word-count-chart");
     $chart.height($chart.width() * 9 / 16);
-    var startDate = new Date('2016-11-23');
     $.plot($chart, [[]], {
         xaxis: {
             mode: "time",

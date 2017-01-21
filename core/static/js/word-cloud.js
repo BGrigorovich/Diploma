@@ -101,6 +101,7 @@ function loadWordCloud() {
 function loadDatePicker() {
     $("#datepicker").datepicker({
         defaultDate: yesterday(),
+        minDate: startDate,
         maxDate: yesterday(),
         dateFormat: "DD, d MM, yy",
         showOtherMonths: true,
