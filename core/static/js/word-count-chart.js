@@ -155,7 +155,7 @@ $(document).ready(function () {
         }
     }).datepicker("setDate", yesterday());
 
-    $(document).on('click', '.build-chart-btn', function () {
+    $(document).on('click', '.plot-chart-btn', function () {
         loadChart($(this).parent());
     });
 
