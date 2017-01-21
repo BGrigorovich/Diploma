@@ -108,9 +108,9 @@ function plot() {
 
 function showRemoveButton() {
     if ($(".control").length == 1) {
-        $(".remove-chart-control").hide();
+        $(".remove-chart-btn").hide();
     } else {
-        $(".remove-chart-control").show();
+        $(".remove-chart-btn").show();
     }
 }
 
@@ -155,11 +155,11 @@ $(document).ready(function () {
         }
     }).datepicker("setDate", yesterday());
 
-    $(document).on('change', '.word-input', function () {
+    $(document).on('click', '.build-chart-btn', function () {
         loadChart($(this).parent());
     });
 
-    $(document).on('click', '.remove-chart-control', function () {
+    $(document).on('click', '.remove-chart-btn', function () {
         var $control = $(this).parent();
         var word = $control.find(".word-input").val();
         var site = $control.find(".site-select option:selected").text().trim();
