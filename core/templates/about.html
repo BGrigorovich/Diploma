@@ -1,0 +1,25 @@
+{% extends "main.html" %}
+
+{% block head %}
+    <script>
+        $(document).ready(function() {
+            $('#about-text').css('margin-top', $(window).height() / 3 + 'px')
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% include "sidebar.html" with active_tab='about' %}
+    <div id="about-text">
+        <div class="text-center"><h1>Ukraine In Trends</h1></div>
+        <div class="col-sm-6 col-sm-offset-3" style="font-size: 16px;">
+            Ukraine In Trends - система моніторингу новинних трендів українського сегменту Інтернету.
+            Тут Ви можете ознайомитись з актуальними та популярними тегами та темами (візуалізовані
+            <a href="{% url 'word-cloud' %}">Хмарою слів</a>) і просто зрозуміти, про що сьогодні говорять люди (а також
+            про що вони говорили в будь-який день, який вас цікавить!).
+            Крім цього, ви можете використовувати Хмару для пошуку статей з різних джерел на цікаві вам та суспільству
+            теми. Також ви можете відстежувати зміни в актуальності слів і порівнювати їх за допомогою
+            <a href="{% url 'chart' %}">Графіку зміни актуальності</a>.
+        </div>
+    </div>
+{% endblock %}

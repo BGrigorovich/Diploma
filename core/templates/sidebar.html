@@ -11,14 +11,21 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="{% if active_tab == 'wordcloud' %}active{% endif %}"><a href="{% url 'word-cloud' %}"><span style="font-size:16px;"
-                                                     class="pull-right hidden-xs showopacity glyphicon glyphicon-cloud"></span>
+                <li class="{% if active_tab == 'wordcloud' %}active{% endif %}"><a href="{% url 'word-cloud' %}"><span
+                        style="font-size:16px;"
+                        class="pull-right hidden-xs showopacity glyphicon glyphicon-cloud"></span>
                     Хмара слів&nbsp;</a>
                 </li>
-                <li class="{% if active_tab == 'chart' %}active{% endif %}"><a href="{% url 'chart' %}"><span style="font-size:16px;"
-                                            class="pull-right hidden-xs showopacity glyphicon glyphicon-signal"></span>
+                <li class="{% if active_tab == 'chart' %}active{% endif %}"><a href="{% url 'chart' %}"><span
+                        style="font-size:16px;"
+                        class="pull-right hidden-xs showopacity glyphicon glyphicon-signal"></span>
                     Графік зміни популярності слів&nbsp;</a>
                 </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="{% if active_tab == 'about' %}active{% endif %}"><a href="{% url 'about' %}"><span
+                        class="pull-right hidden-xs showopacity glyphicon glyphicon-question-sign"></span>Про сайт&nbsp;
+                </a></li>
             </ul>
         </div>
     </div>
