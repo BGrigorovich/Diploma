@@ -2,20 +2,19 @@ var trends;
 var articles;
 
 /**
- * checks if rectangle 2 intersects with rectangle 1 on given axis
- * @param coord1 - rectangle 1 left top corner coordinate on given axis
- * @param size1 - rectangle 1 size on given axis
- * @param coord2 - rectangle 2 left top corner coordinate on given axis
- * @param size2 - rectangle 2 size on given axis
+ * checks if two segments intersects on axis
+ * @param c1 - segment's 1 left coordinate
+ * @param l1 - segment's 1 length
+ * @param c2 - segment's 2 left coordinate
+ * @param l2 - segment's 2 length
  * @returns {boolean}
  */
-function isIntersectsByAxis(coord1, size1, coord2, size2) {
-    return (coord1 <= coord2 && coord2 <= coord1 + size1) || (coord1 <= coord2 + size2 && coord2 + size2 <= coord1 + size1);
+function isIntersectsByAxis(c1, l1, c2, l2) {
+    return !(c1 + l1 <= c2 || c2 + l2 <= c1);
 }
 
 function isTwoRectanglesIntersects(left1, width1, top1, height1, left2, width2, top2, height2) {
-    return ((isIntersectsByAxis(left1, width1, left2, width2) && isIntersectsByAxis(top1, height1, top2, height2)) ||
-    (isIntersectsByAxis(left2, width2, left1, width1) && isIntersectsByAxis(top2, height2, top1, height1)));
+    return isIntersectsByAxis(left1, width1, left2, width2) && isIntersectsByAxis(top1, height1, top2, height2);
 }
 
 function isIntersectsWithWords(left, width, top, height) {
