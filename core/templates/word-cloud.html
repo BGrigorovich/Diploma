@@ -32,7 +32,17 @@
     <div class="container-fluid">
         <div class="row">
             <div id="articles-container" class="col-md-offset-2 col-lg-offset-3">
-                <h3 disabled="disabled" id="articles-container-header"></h3>
+                <h3>Статті зі словом «<span id="articles-container-header-word"></span>»:</h3>
+                <div class="form-inline">
+                    <label>Видання:</label>
+                    <select class="form-control" id="articles-site-filter">
+                        <option value="">Всі видання</option>
+                        {% for site in sites %}
+                            <option value="{{ site.name }}">{{ site.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <ul style="padding-top: 15px;"></ul>
             </div>
         </div>
     </div>

@@ -28,9 +28,9 @@
         <div class="control form-inline" style="padding-bottom: 10px;">
             <label>Видання:</label>
             <select class="site-select form-control" data-previous="всі видання">
-                <option data-name="" value="">Всі видання</option>
+                <option value="">Всі видання</option>
                 {% for site in sites %}
-                    <option data-name="{{ site.name }}" value="{{ site.id }}">{{ site.name }}</option>
+                    <option value="{{ site.id }}">{{ site.name }}</option>
                 {% endfor %}
             </select>
             <label>Слово:</label>
