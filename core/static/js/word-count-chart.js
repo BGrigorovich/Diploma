@@ -1,5 +1,10 @@
 var data = [];
 
+/**
+ * перевіряє, чи графік для слова вже побудований
+ * @param item - дані для побудови графіку
+ * @returns {boolean} - чи графік слова вже побудований
+ */
 function isAlreadyPlotted(item) {
     for (var i = 0; i < data.length; i++) {
         if (data[i]['label'].toLowerCase() == item['label'].toLowerCase()) {
@@ -9,6 +14,11 @@ function isAlreadyPlotted(item) {
     return false;
 }
 
+/**
+ * повертає індекс графіку для слова, який був змінений
+ * @param previousLabel - попередній підпис до лінії графіку
+ * @returns {number} - індекс даних графіку, які були змінені
+ */
 function changedItemIndex(previousLabel) {
     for (var i = 0; i < data.length; i++) {
         if (data[i]['label'].toLowerCase() == previousLabel.toLowerCase()) {
@@ -18,6 +28,11 @@ function changedItemIndex(previousLabel) {
     return -1;
 }
 
+/**
+ * загружає графік слів
+ * @param $control
+ * @returns {boolean}
+ */
 function loadChart($control) {
     function showError(msg) {
         var $wordInput = $control.find('.word-input');
@@ -83,6 +98,9 @@ function loadChart($control) {
     });
 }
 
+/**
+ * повністю перезагружає графік (використовується при зміні дат на дейтпікерах)
+ */
 function reloadChart() {
     window.data = [];
     $('.control').each(function (i, control) {
@@ -90,6 +108,9 @@ function reloadChart() {
     });
 }
 
+/**
+ * будує графік
+ */
 function plot() {
     var $chart = $("#word-count-chart");
     $.plot($chart, window.data,
@@ -121,6 +142,9 @@ function plot() {
     }).appendTo("body");
 }
 
+/**
+ * показує або ховає кнопку для видалення слова з графіку
+ */
 function showRemoveButton() {
     if ($(".control").length == 1) {
         $(".remove-chart-btn").hide();

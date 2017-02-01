@@ -2,21 +2,41 @@ var trends;
 var articles;
 
 /**
- * checks if two segments intersects on axis
- * @param c1 - segment's 1 left coordinate
- * @param l1 - segment's 1 length
- * @param c2 - segment's 2 left coordinate
- * @param l2 - segment's 2 length
- * @returns {boolean}
+ * перевіряє, чи два відрізки на прямій накладаються
+ * @param c1 - ліва координата першого відрізка
+ * @param l1 - довжина першого відрізка
+ * @param c2 - ліва координата другого відрізка
+ * @param l2 - довжина другого відрізка
+ * @returns {boolean} - чи два відрізки на прямій накладаються
  */
 function isIntersectsByAxis(c1, l1, c2, l2) {
     return !(c1 + l1 <= c2 || c2 + l2 <= c1);
 }
 
+/**
+ * перевіряє, чи накладаються два прямокутники на площині
+ * @param left1 - ліва координата першого прямокутника
+ * @param width1 - ширина першого прямокутника
+ * @param top1 - верхня координата першого прямокутника
+ * @param height1 - висота першого прямокутника
+ * @param left2 - ліва координата другого прямокутника
+ * @param width2 - ширина другого прямокутника
+ * @param top2 - верхня другого першого прямокутника
+ * @param height2 - висота другого прямокутника
+ * @returns {boolean} - чи накладаються два прямокутники на площині
+ */
 function isTwoRectanglesIntersects(left1, width1, top1, height1, left2, width2, top2, height2) {
     return isIntersectsByAxis(left1, width1, left2, width2) && isIntersectsByAxis(top1, height1, top2, height2);
 }
 
+/**
+ * перевіряє, чи слово в хмарі слів накладається на інші
+ * @param left - ліва координата слова
+ * @param width - ширина слова
+ * @param top - верхня координата слова
+ * @param height - висота слова
+ * @returns {boolean} - чи слово в хмарі слів накладається на інші
+ */
 function isIntersectsWithWords(left, width, top, height) {
     var words = $('.word');
     var isIntersects = false;
@@ -28,6 +48,11 @@ function isIntersectsWithWords(left, width, top, height) {
     return isIntersects;
 }
 
+/**
+ * додає слово в хмару слів
+ * @param wordText - текст слова
+ * @param font - розмір шрифта слова
+ */
 function putTrend(wordText, font) {
     var wordCloud = $('#word-cloud-container');
     var $word = $('<div></div>');
@@ -45,6 +70,10 @@ function putTrend(wordText, font) {
     $word.addClass('word');
 }
 
+/**
+ * відображає список статей
+ * @param articlesList - масив з сртатями
+ */
 function displayArticles(articlesList) {
     var $articlesContainer = $('#articles-container');
     $articlesContainer.find('.article').remove();
@@ -60,6 +89,10 @@ function displayArticles(articlesList) {
     }
 }
 
+/**
+ * загружає список статей з заданим словом
+ * @param word - слово
+ */
 function loadArticles(word) {
     var site = $('#site-select').val();
     var $articlesContainer = $('#articles-container');
@@ -77,6 +110,9 @@ function loadArticles(word) {
     });
 }
 
+/**
+ * загружає хмару слів
+ */
 function loadWordCloud() {
     var date = $('#datepicker').datepicker('getDate');
     var site = $('#site-select').val();
@@ -107,6 +143,9 @@ function loadWordCloud() {
     });
 }
 
+/**
+ * загружає дейтпікер
+ */
 function loadDatePicker() {
     $('#datepicker').datepicker({
         defaultDate: yesterday(),
