@@ -1,5 +1,5 @@
-var trends;
-var articles;
+var trends; // масив слів в хмарі слів
+var articles;   // масив статей
 
 /**
  * перевіряє, чи два відрізки на прямій накладаються
@@ -56,15 +56,17 @@ function isIntersectsWithWords(left, width, top, height) {
 function putTrend(wordText, font) {
     var wordCloud = $('#word-cloud-container');
     var $word = $('<div></div>');
-    wordCloud.append($word);
-    $word.text(wordText);
-    $word.css('font-size', font);
+    wordCloud.append($word);    // добавляє слово в хмару слів
+    $word.text(wordText);   // задає текст слова
+    $word.css('font-size', font);   // задає розмір шрифту для слова
     $word.addClass('new-word');
+    // рандомно вибирає координати доки слово не буде перетинатись з іншими словами в хмарі
     do {
         var left = Math.floor(Math.random() * (wordCloud.width() - $word.width()));
         var top = Math.floor(Math.random() * (wordCloud.height() - $word.height()));
     } while (isIntersectsWithWords(left, $word.width(), top, $word.height()));
 
+    // задає координати для слова
     $word.css({'left': left + 'px', 'top': top + 'px', 'font-size': font + 'px'});
     $word.removeClass('new-word');
     $word.addClass('word');
@@ -76,15 +78,18 @@ function putTrend(wordText, font) {
  */
 function displayArticles(articlesList) {
     var $articlesContainer = $('#articles-container');
-    $articlesContainer.find('.article').remove();
-    var $articlesUL = $articlesContainer.find('ul');
+    $articlesContainer.find('.article').remove();   // видаляє попередні статті
+    var $articlesUL = $articlesContainer.find('ul');    // знаходить список, в який треба вставляти статті
+    // якщо список статей не порожній
     if (articlesList.length) {
+        // добавляє статті в список
         $articlesUL.append(
             articlesList.map(function (article) {
                 return '<li class="article"><p><a href="' + article.link + '" target="_blank">' + article.title + '</a> (' + article.site + ')</p></li>'
             }).join('')
         );
     } else {
+        // виводить повідомлення, що статей немає
         $articlesUL.append('<div class="article"><strong>Немає статей.</strong></div>');
     }
 }
@@ -94,18 +99,18 @@ function displayArticles(articlesList) {
  * @param word - слово
  */
 function loadArticles(word) {
-    var site = $('#site-select').val();
+    var site = $('#site-select').val(); // дістає ід вибраного сайта
     var $articlesContainer = $('#articles-container');
-    $articlesContainer.find('.article').remove();
+    $articlesContainer.find('.article').remove();   // видаляє попередні статті
+    // AJAX запит на статті по слову і сайту
     $.ajax({
         url: '/articles?published=' + dateToAPIFormat($('#datepicker').datepicker('getDate')) + '&site=' + site + '&text__icontains=' + word,
-        success: function (response) {
+        success: function (response) {  // в разі успішної відповіді
             window.articles = response;
-            $articlesContainer.show();
-            var $articleContainerHeader = $('#articles-container-header-word');
-            $articleContainerHeader.text(word);
-            $('#articles-site-filter').val('');
-            displayArticles(window.articles);
+            $articlesContainer.show();  // показує контейнер для статей
+            $('#articles-container-header-word').text(word); // задає текст заголовку списку статей
+            $('#articles-site-filter').val(''); // виставляє значення по замовчуванню для
+            displayArticles(window.articles);   // виводить статті на екран
         }
     });
 }
@@ -114,30 +119,31 @@ function loadArticles(word) {
  * загружає хмару слів
  */
 function loadWordCloud() {
-    var date = $('#datepicker').datepicker('getDate');
-    var site = $('#site-select').val();
-    $('.word, .new-word').remove();
-    $('#articles-container').hide();
+    var date = $('#datepicker').datepicker('getDate');  // бере дату з дейтпікера
+    var site = $('#site-select').val(); // бере ід вибраного сайта
+    $('.word, .new-word').remove(); // видаляє попередні слова з хмари слів
+    $('#articles-container').hide();    // ховає статті
 
+    // AJAX запит на тренди
     $.ajax({
         url: '/trends/' + dateToAPIFormat(date) + '/' + site,
-        success: function (response) {
+        success: function (response) {  // у разі успішної відповіді
             trends = [];
             $.each(response, function (word, prob) {
                 trends.push([word, prob]);
-            });
+            }); // формує масив трендів
             trends.sort(function (a, b) {
                 return b[1] - a[1];
-            });
+            }); // сортує тренди по спаданню популярності
             var $wordCloud = $('#word-cloud-container');
-            $wordCloud.height($wordCloud.width() * 9 / 16);
+            $wordCloud.height($wordCloud.width() * 9 / 16); // задає висоту хмари слів
 
-            var maxFontSize = Math.round($wordCloud.height() / 20);
-            var FONT_STEP = maxFontSize / 15;
+            var maxFontSize = Math.round($wordCloud.height() / 20); // максимальний розмір шрифта (розмір хмари / 20)
+            var FONT_STEP = maxFontSize / 15;   // крок, з яким змінюється шрифт в хмарі
 
             for (var i = 0; i < trends.length; i++) {
-                trends[i][1] = maxFontSize - (FONT_STEP * Math.floor(i / 5));
-                putTrend(trends[i][0], trends[i][1]);
+                trends[i][1] = maxFontSize - (FONT_STEP * Math.floor(i / 5));   // задає розмір шрифта для слова
+                putTrend(trends[i][0], trends[i][1]);   // виводить слово в хмарі слів
             }
         }
     });
@@ -148,14 +154,14 @@ function loadWordCloud() {
  */
 function loadDatePicker() {
     $('#datepicker').datepicker({
-        defaultDate: yesterday(),
-        minDate: startDate,
-        maxDate: yesterday(),
-        dateFormat: 'DD, d MM, yy',
-        showOtherMonths: true,
-        selectOtherMonths: true,
-        onSelect: function (dateText, inst) {
-            loadWordCloud();
+        defaultDate: yesterday(),   // дата по замовчуванню
+        minDate: startDate, // мінімальна дата, яку можна вибрати, 23 листопада 2016
+        maxDate: yesterday(),   // максимальна дата, яку можна вибрати
+        dateFormat: 'DD, d MM, yy', // формат відображення дати
+        showOtherMonths: true,  // чи показувати місяці крім поточного
+        selectOtherMonths: true,    // чи можна вибирати дати з місяців крім поточного
+        onSelect: function (dateText, inst) {   // подія на зміну вибраного дня
+            loadWordCloud();    // перезагружає хмару слів
         }
     }).datepicker('setDate', yesterday());
 }
@@ -164,30 +170,32 @@ $(document).ready(function () {
     loadDatePicker();
     loadWordCloud();
 
+    // подія на зміну сайту в селекторі
     $('#site-select').change(function () {
-        loadWordCloud();
-        var $articlesSiteFilter = $('#articles-site-filter');
-        if ($(this).val()) {
-            $articlesSiteFilter.parent().hide();
-        } else {
-            $articlesSiteFilter.parent().show();
-            $articlesSiteFilter.val('')
+        loadWordCloud();    // перезагружає хмару слів
+        var $articlesSiteFilter = $('#articles-site-filter');   // фільтр статей по сайту
+        if ($(this).val()) {    // якщо хмара слів побудована для якогось сайту
+            $articlesSiteFilter.parent().hide();    // ховає фільтр по сайту для статей
+        } else {    // якщо хмара слів побудована для всіх сайтів
+            $articlesSiteFilter.parent().show();    // показує фільтр по сайту для статей
+            $articlesSiteFilter.val('');    // виставляє дефолтне значення для фільтру по сайтах
         }
     });
 
+    // подія на зміну сайту в фільтрі по сайтах
     $('#articles-site-filter').change(function () {
-        var siteName = $(this).val();
-        if (siteName) {
-            displayArticles(window.articles.filter(function(article) {
+        var siteName = $(this).val();   // назва сайту
+        if (siteName) { // якщо не всі видання
+            displayArticles(window.articles.filter(function(article) {  // фільтрує статті по сайту і відображаємо їх
                 return article.site == siteName;
             }));
-        } else {
-            displayArticles(window.articles);
+        } else {    // якщо всі видання
+            displayArticles(window.articles);   // відображає статті по всіх виданнях
         }
     });
 
-
+    // подія на клік по слову в хмарі
     $(document).on('click', '.word', function () {
-        loadArticles($(this).text());
+        loadArticles($(this).text());   // загружає статті для слова
     });
 });
